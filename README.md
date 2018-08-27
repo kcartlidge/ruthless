@@ -33,6 +33,8 @@ Running with the ```--site``` option will create the structure for you.
 ```
 ruthless.rb
 site/
+  layout.hbs
+  theme.css
   content/
     index.md
     news/

@@ -86,6 +86,7 @@ if not Dir.exist?(@content_folder)
 end
 must_exist(@layout_file, 'layout template')
 must_exist(@theme_file, 'theme styles')
+@layout = @hbs.compile(File.read @layout_file)
 
 # Ensure we have a fresh, empty, output folder.
 if Dir.exist?(@html_folder)
@@ -104,6 +105,7 @@ end
 puts 'Rendering output'
 prefix = @content_folder + '/'
 prefix_length = prefix.length
+FileUtils.copy(@theme_file,File.join(@html_folder,'theme.css'))
 Find.find(@content_folder) do |path|
 
   # Only handling Markdown files initially.
@@ -132,9 +134,15 @@ Find.find(@content_folder) do |path|
       opts = {auto_ids:false,syntax_highlighter:'rouge',default_lang:'text'}
       kdoc = Kramdown::Document.new(File.read(path),opts)
       html = kdoc.to_html
+      html = @layout.call({
+        content:html,
+        sitetitle:'ruthless.io',
+        siteblurb:'Ruthlessly simple static site generator, written in Ruby.'
+      })
       file.write html
     end
   end
+
 end
 
 # Done.

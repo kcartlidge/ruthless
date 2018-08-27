@@ -3,13 +3,15 @@
 require 'fileutils'
 require 'find'
 require 'kramdown'
+require 'ruby-handlebars'
 
 # Define some of the folder/file options.
 @site_folder = File.join(File.dirname(__FILE__),'site')
 @content_folder = File.join(File.dirname(__FILE__),'site','content')
-@layout_file = File.join(File.dirname(__FILE__),'site','layout.html')
+@layout_file = File.join(File.dirname(__FILE__),'site','layout.hbs')
 @theme_file = File.join(File.dirname(__FILE__),'site','theme.css')
 @html_folder = File.join(File.dirname(__FILE__),'www')
+@hbs = Handlebars::Handlebars.new
 
 # Helper functions.
 def fatal(message)

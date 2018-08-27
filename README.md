@@ -7,9 +7,15 @@ Ruthlessly simple static site generator, written in Ruby.
 ## Prerequisites
 
 * [Ruby 1.9+](https://www.ruby-lang.org)
-* Kramdown (```sudo gem install kramdown```)
-* Rouge (```sudo gem install rouge```)
-* Handlebars (```sudo gem install ruby-handlebars```)
+* [RedCarpet](https://github.com/vmg/redcarpet) - ```sudo gem install redcarpet```
+
+## Installing Ruby
+
+You can use the main Ruby site (see link above) installation details, or try [RVM, the Ruby Version Manager](https://rvm.io).
+
+``` sh
+\curl -sSL https://get.rvm.io | bash -s stable
+```
 
 ## Usage
 

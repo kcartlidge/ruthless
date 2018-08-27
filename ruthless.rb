@@ -2,7 +2,7 @@
 
 require 'fileutils'
 require 'find'
-require 'kramdown'
+require 'redcarpet'
 require 'ruby-handlebars'
 
 # Define some of the folder/file options.
@@ -12,6 +12,18 @@ require 'ruby-handlebars'
 @theme_file = File.join(File.dirname(__FILE__),'site','theme.css')
 @html_folder = File.join(File.dirname(__FILE__),'www')
 @hbs = Handlebars::Handlebars.new
+
+# Set up markdown rendering defaults.
+md_opts = {
+  tables: true,
+  no_intra_emphasis: true,
+  highlight: true,
+  fenced_code_blocks: true,
+  autolink: true,
+  strikethrough: true,
+  space_after_headers: true
+}
+@markdown = Redcarpet::Markdown.new(Redcarpet::Render::HTML, md_opts)
 
 # Helper functions.
 def fatal(message)
@@ -76,9 +88,9 @@ new_file('link example', File.join(@content_folder,'how-to-do-links.md'),"# How 
 
 Links are done in the normal Markdown way:
 
-~~~ markdown
+```` markdown
 [Back to the home page](index.html)
-~~~
+````
 
 To target your own pages note that only extentions (not file names) are changed when creating the static site.
 This means you target the *existing* folder/file names as per the original folder/file structure in ```content```.
@@ -104,17 +116,13 @@ To set the look and feel ...
     <div id='main'>
 {{ content }}
     </div>
-    {% raw %}
     <script>
       var ls = document.links;
-      for (var i = 0, ln = ls.length; i < ln; i++) {
-          if (ls[i].hostname != window.location.hostname) {
+      for (var i = 0, ln = ls.length; i < ln; i++)
+          if (ls[i].hostname != window.location.hostname)
               ls[i].target = '_blank';
-              ls[i].title = 'Opens in a new tab/window';
-          }
-      }
+              // ls[i].title = 'Opens in a new tab/window';
     </script>
-    {% endraw %}
   </body>
 </html>")
   new_file('theme',@theme_file,"@import url('https://fonts.googleapis.com/css?family=Noto+Sans:400,700');
@@ -193,9 +201,7 @@ Find.find(@content_folder) do |path|
     basename = File.basename(path, '.md')
     abs_html = File.join(abs_path, basename + '.html')
     File.open(abs_html, 'w') do |file|
-      opts = {auto_ids:false,syntax_highlighter:'rouge',default_lang:'text'}
-      kdoc = Kramdown::Document.new(File.read(path),opts)
-      html = kdoc.to_html
+      html = @markdown.render(File.read(path))
       html = @layout.call({
         content:html,
         sitetitle:'ruthless.io',

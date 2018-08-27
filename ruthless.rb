@@ -1,6 +1,8 @@
 #!/usr/bin/ruby
 
 require 'fileutils'
+require 'find'
+require 'kramdown'
 
 # Define some of the folder/file options.
 @site_folder = File.join(File.dirname(__FILE__),'site')
@@ -72,6 +74,41 @@ puts 'Creating output folder'
 FileUtils.mkdir @html_folder
 if not Dir.exist?(@html_folder)
   fatal('Unable to create folder')
+end
+
+# Render the whole site folder tree.
+puts 'Rendering output'
+prefix = @content_folder + '/'
+prefix_length = prefix.length
+Find.find(@content_folder) do |path|
+
+  # Only handling Markdown files initially.
+  if File.extname(path) == '.md'
+    if not path.start_with?(prefix)
+      fatal('Expected filename to start with ' + prefix)
+    end
+
+    # Derive a path/filename based on the site vs output folders.
+    rel_path = File.dirname(path[prefix_length, path.length])
+    abs_path = File.join(@html_folder, rel_path)
+
+    # Create (and display) new subfolders as they are needed.
+    if not Dir.exist?(abs_path)
+      FileUtils.mkdir_p abs_path
+      if not Dir.exist?(abs_path)
+        fatal('Unable to create content subfolder ' + abs_path)
+      end
+      puts '  /' + rel_path
+    end
+
+    # Write out the new file.
+    basename = File.basename(path, '.md')
+    abs_html = File.join(abs_path, basename + '.html')
+    File.open(abs_html, 'w') do |file|
+      html = Kramdown::Document.new(File.read(path), {auto_ids: false}).to_html
+      file.write html
+    end
+  end
 end
 
 # Done.

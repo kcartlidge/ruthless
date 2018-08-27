@@ -1,10 +1,18 @@
 <html>
-  <head></head>
+  <head><link href='theme.css' rel='stylesheet' type='text/css' /><meta charset='utf-8' /></head>
   <body>
-    <div id='site-title'>{{ sitetitle }}</div>
-    <div id='site-blurb'>{{ siteblurb }}</div>
+    <div id='header'>
+      <div id='site-title'>{{ sitetitle }}</div>
+      <div id='site-blurb'>{{ siteblurb }}</div>
+    </div>
     <div id='main'>
 {{ content }}
     </div>
+    <script>
+      var ls = document.links;
+      for (var i = 0, ln = ls.length; i < ln; i++)
+          if (ls[i].hostname != window.location.hostname)
+              ls[i].target = '_blank';
+    </script>
   </body>
 </html>

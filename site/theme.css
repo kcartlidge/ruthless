@@ -1,1 +1,15 @@
-body { font-family: sans-serif; font-size: 13pt; }
+@import url('https://fonts.googleapis.com/css?family=Noto+Sans:400,700');
+html,body,p,* { line-height: 150%; }
+body { font-family: 'Noto Sans', Verdana, 'Helvetica Neue', Helvetica, sans-serif; font-size: 14pt; background: #f8f8f8; color: #444; margin: 0; padding: 0; }
+#header, #main { margin: 0; padding: 0.5rem 2rem; }
+#site-title { font-size: 1.5rem; text-transform: uppercase; color: #368; }
+#site-blurb { font-size: 1.1rem; }
+h1,h2,h3,h4,h5,h6 { margin: 0; padding: 1rem 0; line-height: 110%; }
+h1 { font-weight: bold; }
+pre { background: #fff; padding: 0.5rem; overflow: scroll; }
+code { background: #fff; padding: 0.1rem 0.25rem; }
+a { color: #06d; display: inline-block; padding: 0; margin: 0 0.2rem; text-decoration: none; border-bottom: none; }
+a:hover { color: #0073aa; border-bottom: solid 1px #0073aa; }
+@media (min-width: 40rem) {
+  #header, #main { width: 50rem; margin: 0 auto; }
+}

@@ -61,5 +61,18 @@ if not Dir.exist?(@content_folder)
   fatal('Content folder not found')
 end
 
+# Ensure we have a fresh, empty, output folder.
+if Dir.exist?(@html_folder)
+  puts 'Removing output folder'
+  if not FileUtils.rmtree(@html_folder)
+    fatal('Unable to remove folder')
+  end
+end
+puts 'Creating output folder'
+FileUtils.mkdir @html_folder
+if not Dir.exist?(@html_folder)
+  fatal('Unable to create folder')
+end
+
 # Done.
 puts '---------------------------------------'

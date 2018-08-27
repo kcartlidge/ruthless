@@ -8,6 +8,7 @@ Ruthlessly simple static site generator, written in Ruby.
 
 * [Ruby 1.9+](https://www.ruby-lang.org)
 * Kramdown (```sudo gem install kramdown```)
+* Rouge (```sudo gem install rouge```)
 
 ## Usage
 

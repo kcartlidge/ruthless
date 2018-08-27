@@ -105,7 +105,9 @@ Find.find(@content_folder) do |path|
     basename = File.basename(path, '.md')
     abs_html = File.join(abs_path, basename + '.html')
     File.open(abs_html, 'w') do |file|
-      html = Kramdown::Document.new(File.read(path), {auto_ids: false}).to_html
+      opts = {auto_ids:false,syntax_highlighter:'rouge',default_lang:'text'}
+      kdoc = Kramdown::Document.new(File.read(path),opts)
+      html = kdoc.to_html
       file.write html
     end
   end

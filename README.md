@@ -1,6 +1,6 @@
 # ruthless.io
 
-*Version 0.1.0*
+*Version 0.2.0*
 
 Ruthlessly simple static site generator, written in Ruby.
 
@@ -8,6 +8,7 @@ Ruthlessly simple static site generator, written in Ruby.
 
 * [Ruby 1.9+](https://www.ruby-lang.org)
 * [RedCarpet](https://github.com/vmg/redcarpet) - ```sudo gem install redcarpet```
+* [Liquid](https://shopify.github.io/liquid/) - ```sudo gem install liquid```
 
 ## Installing Ruby
 
@@ -33,7 +34,7 @@ Running with the ```--site``` option will create the structure for you.
 ```
 ruthless.rb
 site/
-  layout.hbs
+  layout.liquid
   theme.css
   content/
     index.md
@@ -46,4 +47,21 @@ site/
 
 ## Site content
 
-There is no templating in place yet. Currently your Markdown has no recourse to shared headers/footers and/or style sheets. This is incoming.
+### Basic flow
+
+The site is rendered using your content, the ```.liquid``` template, and the ```theme.css```.
+
+* The ```theme.css``` file is copied over
+* Your ```.md``` file and it's location is read in
+* It is passed though *Red Carpet* for fast conversion to HTML
+* This is then passed through *Liquid* for fast templating
+* The result is written to a matching folder in the output
+
+### Allowed properties in the template
+
+This list is complete, though very small as *ruthless* is still in progress.
+There is incoming code to load this from your ```site``` folder.
+
+* sitetitle - hardcoded to 'ruthless.io'
+* siteblurb - hardcoded to reflect *ruthless*
+* content - the final output from the flow above

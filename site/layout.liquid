@@ -6,14 +6,17 @@
       <div id='site-blurb'>{{ siteblurb }}</div>
     </div>
     <div id='main'>
-{{ content }}
+      {{ content }}
     </div>
     <script>
       var ls = document.links;
-      for (var i = 0, ln = ls.length; i < ln; i++)
-          if (ls[i].hostname != window.location.hostname)
-              ls[i].target = '_blank';
-              // ls[i].title = 'Opens in a new tab/window';
+      for (var i = 0, ln = ls.length; i < ln; i++) {
+        if (ls[i].hostname != window.location.hostname) {
+          ls[i].target = '_blank';
+          ls[i].title = 'Opens in a new tab/window';
+          ls[i].className = (ls[i].className + ' external-link').trim();
+        }
+      }
     </script>
   </body>
 </html>

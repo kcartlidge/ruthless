@@ -3,15 +3,14 @@
 require 'fileutils'
 require 'find'
 require 'redcarpet'
-require 'ruby-handlebars'
+require 'liquid'
 
 # Define some of the folder/file options.
 @site_folder = File.join(File.dirname(__FILE__),'site')
 @content_folder = File.join(File.dirname(__FILE__),'site','content')
-@layout_file = File.join(File.dirname(__FILE__),'site','layout.hbs')
+@layout_file = File.join(File.dirname(__FILE__),'site','layout.liquid')
 @theme_file = File.join(File.dirname(__FILE__),'site','theme.css')
 @html_folder = File.join(File.dirname(__FILE__),'www')
-@hbs = Handlebars::Handlebars.new
 
 # Set up markdown rendering defaults.
 md_opts = {
@@ -79,8 +78,8 @@ To change what appears here ...
 * edit 'site/content/index.md' to provide your own content
 * run ```ruby ruthless.rb``` to regenerate the static version
 * reload this page to see your changes
-* add more content page
-* update ```layout.hbs``` and ```theme.css``` to set your look and feel
+* add more content pages, including subfolders
+* update ```layout.liquid``` and ```theme.css``` to set your look and feel
 
 [How to do Links](how-to-do-links.html)
 [Change the Look and Feel](look-and-feel.html)")
@@ -97,12 +96,15 @@ This means you target the *existing* folder/file names as per the original folde
 Therefore it is suggested your content filenames are *slugs* (e.g. ```this-page``` not ```This Page```).
 Whether you need ```.html``` depends upon whether you activate simple URLs.
 
+The default template will automatically (via JavaScript) add a ```target``` attribute to any links that have a protocol.
+For example ```[Liquid](https://shopify.github.io/liquid/)``` looks like: [Liquid](https://shopify.github.io/liquid/)
+
 [Back to the home page](index.html)")
   new_file('theming', File.join(@content_folder,'look-and-feel.md'),"# Change the Look and Feel
 
 To set the look and feel ...
 
-* your layout is a [Handlebars](https://github.com/vincent-psarga/ruby-handlebars) template in your ```content``` folder named ```layout.hbs```
+* your layout is a [Liquid](https://shopify.github.io/liquid/) template in your ```content``` folder named ```layout.liquid```
 * the style sheet is standard CSS in your ```content``` folder named ```theme.css```
 
 [Back to the home page](index.html)")
@@ -114,14 +116,17 @@ To set the look and feel ...
       <div id='site-blurb'>{{ siteblurb }}</div>
     </div>
     <div id='main'>
-{{ content }}
+      {{ content }}
     </div>
     <script>
       var ls = document.links;
-      for (var i = 0, ln = ls.length; i < ln; i++)
-          if (ls[i].hostname != window.location.hostname)
-              ls[i].target = '_blank';
-              // ls[i].title = 'Opens in a new tab/window';
+      for (var i = 0, ln = ls.length; i < ln; i++) {
+        if (ls[i].hostname != window.location.hostname) {
+          ls[i].target = '_blank';
+          ls[i].title = 'Opens in a new tab/window';
+          ls[i].className = (ls[i].className + ' external-link').trim();
+        }
+      }
     </script>
   </body>
 </html>")
@@ -135,8 +140,9 @@ h1,h2,h3,h4,h5,h6 { margin: 0; padding: 1rem 0; line-height: 110%; }
 h1 { font-weight: bold; }
 pre { background: #fff; padding: 0.5rem; overflow: scroll; }
 code { background: #fff; padding: 0.1rem 0.25rem; }
-a { color: #06d; display: inline-block; padding: 0; margin: 0 0.2rem; text-decoration: none; border-bottom: none; }
+a { line-height: 120%; color: #06d; display: inline-block; padding: 0; margin: 0 0.2rem; text-decoration: none; border-bottom: none; }
 a:hover { color: #0073aa; border-bottom: solid 1px #0073aa; }
+a.external-link:after { vertical-align: top; font-size: 0.7em; content: ' (ext)' }
 @media (min-width: 40rem) {
   #header, #main { width: 50rem; margin: 0 auto; }
 }
@@ -155,7 +161,8 @@ if not Dir.exist?(@content_folder)
 end
 must_exist(@layout_file, 'layout template')
 must_exist(@theme_file, 'theme styles')
-@layout = @hbs.compile(File.read @layout_file)
+Liquid::Template.error_mode = :strict
+@layout = Liquid::Template.parse(File.read @layout_file)
 
 # Ensure we have a fresh, empty, output folder.
 if Dir.exist?(@html_folder)
@@ -202,11 +209,11 @@ Find.find(@content_folder) do |path|
     abs_html = File.join(abs_path, basename + '.html')
     File.open(abs_html, 'w') do |file|
       html = @markdown.render(File.read(path))
-      html = @layout.call({
-        content:html,
-        sitetitle:'ruthless.io',
-        siteblurb:'Ruthlessly simple static site generator, written in Ruby.'
-      })
+      html = @layout.render(
+        'content' => html,
+        'sitetitle' => 'ruthless.io',
+        'siteblurb' => 'Ruthlessly simple static site generator, written in Ruby.'
+      )
       file.write html
     end
   end

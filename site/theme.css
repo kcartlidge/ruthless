@@ -8,8 +8,9 @@ h1,h2,h3,h4,h5,h6 { margin: 0; padding: 1rem 0; line-height: 110%; }
 h1 { font-weight: bold; }
 pre { background: #fff; padding: 0.5rem; overflow: scroll; }
 code { background: #fff; padding: 0.1rem 0.25rem; }
-a { color: #06d; display: inline-block; padding: 0; margin: 0 0.2rem; text-decoration: none; border-bottom: none; }
+a { line-height: 120%; color: #06d; display: inline-block; padding: 0; margin: 0 0.2rem; text-decoration: none; border-bottom: none; }
 a:hover { color: #0073aa; border-bottom: solid 1px #0073aa; }
+a.external-link:after { vertical-align: top; font-size: 0.7em; content: ' (ext)' }
 @media (min-width: 40rem) {
   #header, #main { width: 50rem; margin: 0 auto; }
 }

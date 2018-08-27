@@ -25,9 +25,12 @@ def done(message)
   exit
 end
 
-def new_content(pathname, filename, content)
-  File.open(File.join(@content_folder, pathname, filename),'w') do |s|
+def new_file(human_name, filename, content)
+  File.open(filename,'w') do |s|
     s.puts content
+  end
+  if not File.exist?(filename)
+    fatal("Failed to create #{human_name} " + filename)
   end
 end
 
@@ -57,7 +60,18 @@ if new_site
   if not Dir.exist?(@content_folder)
     fatal('Unable to create folders')
   end
-  new_content('.','index.md',"# Welcome to your new site\n\n(from site/content/index.md)")
+  new_file('home page', File.join(@content_folder,'index.md'),"# Edit 'site/content/index.md'")
+  new_file('template',@layout_file,"<html>
+  <head><link href='theme.css' rel='stylesheet' type='text/css' /><meta charset='utf-8' /></head>
+  <body>
+    <div id='site-title'>{{ sitetitle }}</div>
+    <div id='site-blurb'>{{ siteblurb }}</div>
+    <div id='main'>
+{{ content }}
+    </div>
+  </body>
+</html>")
+  new_file('theme',@theme_file,'body { font-family: sans-serif; font-size: 13pt; }')
   done('New site created')
 end
 

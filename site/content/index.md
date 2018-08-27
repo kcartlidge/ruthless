@@ -1,3 +1,1 @@
-# Welcome to your new site
-
-(from site/content/index.md)
+# Edit 'site/content/index.md'

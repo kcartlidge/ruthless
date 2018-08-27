@@ -29,6 +29,12 @@ def new_content(pathname, filename, content)
   end
 end
 
+def must_exist(filename, human_name)
+  if not File.exist?(filename)
+    fatal("Cannot find #{human_name} " + filename)
+  end
+end
+
 # Show the intro.
 puts
 puts 'RUTHLESS  https://ruthless.io'
@@ -58,10 +64,12 @@ puts '---------------------------------------'
 puts 'Reading  ' + @site_folder
 puts 'Creating ' + @html_folder
 
-# Ensure we have input content.
+# Ensure we have required folders/files.
 if not Dir.exist?(@content_folder)
   fatal('Content folder not found')
 end
+must_exist(@layout_file, 'layout template')
+must_exist(@theme_file, 'theme styles')
 
 # Ensure we have a fresh, empty, output folder.
 if Dir.exist?(@html_folder)

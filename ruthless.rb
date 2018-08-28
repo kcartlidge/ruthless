@@ -160,7 +160,7 @@ Find.find(@content_folder) do |path|
   ext = File.extname(path)
   use_template = (@templatable.include? ext)
   out_filename = File.join(abs_path, filename_no_ext)
-  out_filename += if use_template then ".html" else ext end
+  out_filename += use_template ? '.html' : ext
 
   # Write out the new file.
   # This could handle non-text files more efficiently.

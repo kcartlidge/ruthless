@@ -2,11 +2,18 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.5.0] - 2018-08-28
+
+### Added
+
+- Support non-Markdown content files
+- Text files (.txt) are also templated
+
 ## [0.4.1] - 2018-08-28
 
 ### Changed
 
-- Added a command line option to choose whether or not to serve the site
+- Use a command line option to choose whether or not to serve the site
 
 ## [0.4.0] - 2018-08-28
 

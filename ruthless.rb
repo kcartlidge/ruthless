@@ -4,6 +4,7 @@ require 'fileutils'
 require 'find'
 require 'redcarpet'
 require 'liquid'
+require 'webrick'
 
 # Define some of the folder/file options.
 @site_folder = File.join(File.dirname(__FILE__), 'site')
@@ -201,7 +202,17 @@ Find.find(@content_folder) do |path|
     file.write html
   end
 end
+puts '---------------------------------------'
+puts 'Generated.'
+
+# Serve the static site just created.
+puts
+puts 'Starting static server on http://localhost:1337 ... Ctrl+C stops'
+root = File.join(File.dirname(__FILE__), 'www')
+server = WEBrick::HTTPServer.new Port: 1337, DocumentRoot: root, AccessLog: [], Logger: nil
+trap 'INT' do server.shutdown end
+server.start
 
 # Done.
-puts '---------------------------------------'
-puts 'finis.'
+puts
+puts 'Finis.'

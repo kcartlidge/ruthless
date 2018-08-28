@@ -9,6 +9,9 @@ Ruthlessly simple static site generator, written in Ruby.
 * [Ruby 1.9+](https://www.ruby-lang.org)
 * [RedCarpet](https://github.com/vmg/redcarpet) - ```sudo gem install redcarpet```
 * [Liquid](https://shopify.github.io/liquid/) - ```sudo gem install liquid```
+* [Webrick](https://github.com/ruby/webrick) - ```sudo gem install webrick```
+
+*Webrick is only being used for serving the static site locally.*
 
 ## Installing Ruby
 

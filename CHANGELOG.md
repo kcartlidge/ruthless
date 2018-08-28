@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.3.0] - 2018-08-28
+
+### Added
+
+- Serve static site with *Webrick*
+
 ## [0.2.0] - 2018-08-27
 
 ### Added

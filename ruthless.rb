@@ -53,7 +53,7 @@ end
 
 # Show the intro.
 puts
-puts 'RUTHLESS  https://ruthless.io'
+puts 'RUTHLESS 0.3.0  https://ruthless.io'
 puts 'Ruthlessly simple static site generator'
 puts
 puts ' --site    Create a new site'

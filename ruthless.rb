@@ -78,8 +78,8 @@ if new_site
   FileUtils.mkdir_p @content_folder
   fatal('Unable to create folders') unless Dir.exist?(@content_folder)
   new_file('ruthless.ini', @ini_file, "[SITE]
-  title = Your Site Name
-  blurb = Welcome to my ruthless-generated site")
+title = Your Site Name
+blurb = Welcome to my ruthless-generated site")
   new_file('home page', File.join(@content_folder, 'index.md'), "# Welcome to Ruthless
 
 For more information, see [the web site](https://ruthless.io).")

@@ -6,11 +6,11 @@ require 'redcarpet'
 require 'liquid'
 
 # Define some of the folder/file options.
-@site_folder = File.join(File.dirname(__FILE__),'site')
-@content_folder = File.join(File.dirname(__FILE__),'site','content')
-@layout_file = File.join(File.dirname(__FILE__),'site','layout.liquid')
-@theme_file = File.join(File.dirname(__FILE__),'site','theme.css')
-@html_folder = File.join(File.dirname(__FILE__),'www')
+@site_folder = File.join(File.dirname(__FILE__), 'site')
+@content_folder = File.join(File.dirname(__FILE__), 'site', 'content')
+@layout_file = File.join(File.dirname(__FILE__), 'site', 'layout.liquid')
+@theme_file = File.join(File.dirname(__FILE__), 'site', 'theme.css')
+@html_folder = File.join(File.dirname(__FILE__), 'www')
 
 # Set up markdown rendering defaults.
 md_opts = {
@@ -24,31 +24,30 @@ md_opts = {
 }
 @markdown = Redcarpet::Markdown.new(Redcarpet::Render::HTML, md_opts)
 
-# Helper functions.
+# Display the error message then abort.
 def fatal(message)
   puts '---------------------------------------'
-  puts 'ERROR: ' + message
+  puts "ERROR: #{message}"
   abort
 end
 
+# Display the message then exit.
 def done(message)
   puts message
   exit
 end
 
+# Create a new file and write the content. Human name is used for errors.
 def new_file(human_name, filename, content)
-  File.open(filename,'w') do |s|
+  File.open(filename, 'w') do |s|
     s.puts content
   end
-  if not File.exist?(filename)
-    fatal("Failed to create #{human_name} " + filename)
-  end
+  fatal("Failed to create #{human_name} #{filename}") unless File.exist?(filename)
 end
 
+# Aborts if the file is not found. Human name is used for errors.
 def must_exist(filename, human_name)
-  if not File.exist?(filename)
-    fatal("Cannot find #{human_name} " + filename)
-  end
+  fatal("Cannot find #{human_name} #{filename}") unless File.exist?(filename)
 end
 
 # Show the intro.
@@ -60,18 +59,14 @@ puts ' --site    Create a new site'
 puts
 
 # Create a new site if requested.
-new_site = ARGV[0] and ARGV[0] == '--site'
+new_site = (ARGV[0] && (ARGV[0] == '--site'))
 if new_site
   puts '---------------------------------------'
   puts 'Creating new site and content folders'
-  if Dir.exist?(@site_folder)
-    fatal('Site folder already exists')
-  end
-    FileUtils.mkdir_p @content_folder
-  if not Dir.exist?(@content_folder)
-    fatal('Unable to create folders')
-  end
-  new_file('home page', File.join(@content_folder,'index.md'),"# Welcome to Ruthless
+  fatal('Site folder already exists') if Dir.exist?(@site_folder)
+  FileUtils.mkdir_p @content_folder
+  fatal('Unable to create folders') unless Dir.exist?(@content_folder)
+  new_file('home page', File.join(@content_folder, 'index.md'), "# Welcome to Ruthless
 
 To change what appears here ...
 
@@ -83,7 +78,7 @@ To change what appears here ...
 
 [How to do Links](how-to-do-links.html)
 [Change the Look and Feel](look-and-feel.html)")
-new_file('link example', File.join(@content_folder,'how-to-do-links.md'),"# How to do Links
+  new_file('link example', File.join(@content_folder, 'how-to-do-links.md'), "# How to do Links
 
 Links are done in the normal Markdown way:
 
@@ -100,7 +95,7 @@ The default template will automatically (via JavaScript) add a ```target``` attr
 For example ```[Liquid](https://shopify.github.io/liquid/)``` looks like: [Liquid](https://shopify.github.io/liquid/)
 
 [Back to the home page](index.html)")
-  new_file('theming', File.join(@content_folder,'look-and-feel.md'),"# Change the Look and Feel
+  new_file('theming', File.join(@content_folder, 'look-and-feel.md'), "# Change the Look and Feel
 
 To set the look and feel ...
 
@@ -108,7 +103,7 @@ To set the look and feel ...
 * the style sheet is standard CSS in your ```content``` folder named ```theme.css```
 
 [Back to the home page](index.html)")
-  new_file('template',@layout_file,"<html>
+  new_file('template', @layout_file, "<html>
   <head><link href='theme.css' rel='stylesheet' type='text/css' /><meta charset='utf-8' /></head>
   <body>
     <div id='header'>
@@ -130,7 +125,7 @@ To set the look and feel ...
     </script>
   </body>
 </html>")
-  new_file('theme',@theme_file,"@import url('https://fonts.googleapis.com/css?family=Noto+Sans:400,700');
+  new_file('theme', @theme_file, "@import url('https://fonts.googleapis.com/css?family=Noto+Sans:400,700');
 html,body,p,* { line-height: 150%; }
 body { font-family: 'Noto Sans', Verdana, 'Helvetica Neue', Helvetica, sans-serif; font-size: 14pt; background: #f8f8f8; color: #444; margin: 0; padding: 0; }
 #header, #main { margin: 0; padding: 0.5rem 2rem; }
@@ -156,69 +151,57 @@ puts 'Reading ' + @site_folder
 puts 'Creating ' + @html_folder
 
 # Ensure we have required folders/files.
-if not Dir.exist?(@content_folder)
-  fatal('Content folder not found')
-end
+fatal('Content folder not found') unless Dir.exist?(@content_folder)
 must_exist(@layout_file, 'layout template')
 must_exist(@theme_file, 'theme styles')
 Liquid::Template.error_mode = :strict
-@layout = Liquid::Template.parse(File.read @layout_file)
+@layout = Liquid::Template.parse(File.read(@layout_file))
 
 # Ensure we have a fresh, empty, output folder.
 if Dir.exist?(@html_folder)
   puts 'Removing output folder'
-  if not FileUtils.rmtree(@html_folder)
-    fatal('Unable to remove folder')
-  end
+  fatal('Unable to remove folder') unless FileUtils.rmtree(@html_folder)
 end
 puts 'Creating output folder'
 FileUtils.mkdir @html_folder
-if not Dir.exist?(@html_folder)
-  fatal('Unable to create folder')
-end
+fatal('Unable to create folder') unless Dir.exist?(@html_folder)
 
 # Render the whole site folder tree.
 puts 'Rendering output'
 puts '  /'
 prefix = @content_folder + '/'
 prefix_length = prefix.length
-FileUtils.copy(@theme_file,File.join(@html_folder,'theme.css'))
+FileUtils.copy(@theme_file, File.join(@html_folder, 'theme.css'))
 Find.find(@content_folder) do |path|
-
   # Only handling Markdown files initially.
-  if File.extname(path) == '.md'
-    if not path.start_with?(prefix)
-      fatal('Expected filename to start with ' + prefix)
-    end
+  next unless File.extname(path) == '.md'
+  fatal("Expected filename to start with #{prefix}") unless path.start_with?(prefix)
 
-    # Derive a path/filename based on the site vs output folders.
-    rel_path = File.dirname(path[prefix_length, path.length])
-    abs_path = File.join(@html_folder, rel_path)
+  # Derive a path/filename based on the site vs output folders.
+  rel_path = File.dirname(path[prefix_length, path.length])
+  abs_path = File.join(@html_folder, rel_path)
 
-    # Create (and display) new subfolders as they are needed.
-    if not Dir.exist?(abs_path)
-      FileUtils.mkdir_p abs_path
-      if not Dir.exist?(abs_path)
-        fatal('Unable to create content subfolder ' + abs_path)
-      end
-      puts '  /' + rel_path
-    end
-
-    # Write out the new file.
-    basename = File.basename(path, '.md')
-    abs_html = File.join(abs_path, basename + '.html')
-    File.open(abs_html, 'w') do |file|
-      html = @markdown.render(File.read(path))
-      html = @layout.render(
-        'content' => html,
-        'sitetitle' => 'ruthless.io',
-        'siteblurb' => 'Ruthlessly simple static site generator, written in Ruby.'
-      )
-      file.write html
-    end
+  # Create (and display) new subfolders as they are needed.
+  unless Dir.exist?(abs_path)
+    FileUtils.mkdir_p abs_path
+    fatal("Unable to create content subfolder #{abs_path}") unless Dir.exist?(abs_path)
+    puts '  /' + rel_path
   end
 
+  # Write out the new file.
+  basename = File.basename(path, '.md')
+  abs_html = File.join(abs_path, "#{basename}.html")
+  File.open(abs_html, 'w') do |file|
+    html = @markdown.render(File.read(path))
+    html = @layout.render(
+      'content' => html,
+      'sitetitle' => 'ruthless.io',
+      'siteblurb' => 'Ruthlessly simple static site generator, written in Ruby.'
+    )
+    file.write html
+  end
 end
 
 # Done.
 puts '---------------------------------------'
+puts 'finis.'

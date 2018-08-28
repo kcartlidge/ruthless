@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.4.0] - 2018-08-28
+
+### Added
+
+- Create and use a ```ruthless.ini``` config file
+
 ## [0.3.0] - 2018-08-28
 
 ### Added

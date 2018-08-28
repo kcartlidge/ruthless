@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.4.1] - 2018-08-28
+
+### Changed
+
+- Added a command line option to choose whether or not to serve the site
+
 ## [0.4.0] - 2018-08-28
 
 ### Added

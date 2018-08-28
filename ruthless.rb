@@ -60,10 +60,11 @@ end
 
 # Show the intro.
 puts
-puts 'RUTHLESS 0.4.0  https://ruthless.io'
+puts 'RUTHLESS 0.4.1  https://ruthless.io'
 puts 'Ruthlessly simple static site generator'
 puts
-puts ' --site    Create a new site'
+puts ' --site    Create a new base site'
+puts ' --serve   Create and also serve the site'
 puts
 
 # Create a new site if requested.
@@ -169,14 +170,19 @@ end
 puts '---------------------------------------'
 puts 'Generated.'
 
-# Serve the static site just created.
-puts
-puts 'Starting static server on http://localhost:1337 ... Ctrl+C stops'
-puts
-root = File.join(File.dirname(__FILE__), 'www')
-server = WEBrick::HTTPServer.new Port: 1337, DocumentRoot: root, AccessLog: [], Logger: nil
-trap 'INT' do server.shutdown end
-server.start
+# If requested, serve the static site just created.
+serve = (ARGV[0] && (ARGV[0] == '--serve'))
+if serve
+  puts '---------------------------------------'
+  puts 'Creating new site and content folders'
+  puts
+  puts 'Starting static server on http://localhost:1337 ... Ctrl+C stops'
+  puts
+  root = File.join(File.dirname(__FILE__), 'www')
+  server = WEBrick::HTTPServer.new Port: 1337, DocumentRoot: root, AccessLog: [], Logger: nil
+  trap 'INT' do server.shutdown end
+  server.start
+end
 
 # Done.
 puts

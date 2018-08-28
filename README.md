@@ -1,6 +1,6 @@
 # ruthless.io
 
-*Version 0.4.0*
+*Version 0.4.1*
 
 Ruthlessly simple static site generator, written in Ruby.
 
@@ -28,6 +28,7 @@ You can use the main Ruby site (see link above) installation details, or try [RV
 * Drop the ```ruthless.rb``` script into a folder.
 * Run ```ruby ruthless.rb --site``` to generate a stub site.
 * Run ```ruby ruthless.rb``` to render the static version.
+* Run ```ruby ruthless.rb --serve``` to render (and serve) the static version.
 
 ## Site structure
 
@@ -54,7 +55,7 @@ site/
 
 ### Configuration
 
-The ```site``` folder should have a ```ruthless.ini``` file with the following options (if you create a new site then this is what will be provided for you).
+The ```site``` folder should have a ```ruthless.ini``` file with the following options (if you create a new site then a sample one will be provided for you).
 
 ``` ini
 [SITE]

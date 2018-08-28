@@ -104,7 +104,7 @@ To set the look and feel ...
 
 [Back to the home page](index.html)")
   new_file('template', @layout_file, "<html>
-  <head><link href='theme.css' rel='stylesheet' type='text/css' /><meta charset='utf-8' /></head>
+  <head><link href='/theme.css' rel='stylesheet' type='text/css' /><meta charset='utf-8' /></head>
   <body>
     <div id='header'>
       <div id='site-title'>{{ sitetitle }}</div>

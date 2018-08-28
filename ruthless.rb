@@ -6,6 +6,7 @@ require 'inifile'
 require 'redcarpet'
 require 'liquid'
 require 'webrick'
+require 'set'
 
 # Define some of the folder/file options.
 @site_folder = File.join(File.dirname(__FILE__), 'site')
@@ -14,6 +15,7 @@ require 'webrick'
 @layout_file = File.join(File.dirname(__FILE__), 'site', 'layout.liquid')
 @theme_file = File.join(File.dirname(__FILE__), 'site', 'theme.css')
 @html_folder = File.join(File.dirname(__FILE__), 'www')
+@templatable = ['.md', '.txt'].to_set
 
 # Set up markdown rendering defaults.
 md_opts = {
@@ -134,14 +136,13 @@ fatal('Unable to create folder') unless Dir.exist?(@html_folder)
 
 # Render the whole site folder tree.
 puts 'Rendering output'
-puts '  /'
-prefix = @content_folder + '/'
+puts "  #{File::SEPARATOR}"
+prefix = "#{@content_folder}#{File::SEPARATOR}"
 prefix_length = prefix.length
 FileUtils.copy(@theme_file, File.join(@html_folder, 'theme.css'))
 Find.find(@content_folder) do |path|
-  # Only handling Markdown files initially.
-  next unless File.extname(path) == '.md'
-  fatal("Expected filename to start with #{prefix}") unless path.start_with?(prefix)
+  next if File.directory? path
+  fatal("Expected filename to start with #{prefix} - #{path}") unless path.start_with?(prefix)
 
   # Derive a path/filename based on the site vs output folders.
   rel_path = File.dirname(path[prefix_length, path.length])
@@ -151,20 +152,38 @@ Find.find(@content_folder) do |path|
   unless Dir.exist?(abs_path)
     FileUtils.mkdir_p abs_path
     fatal("Unable to create content subfolder #{abs_path}") unless Dir.exist?(abs_path)
-    puts '  /' + rel_path
+    puts "  #{File::SEPARATOR}#{rel_path}"
+  end
+
+  # Derive the output filename.
+  filename_no_ext = File.basename(path, '.*')
+  ext = File.extname(path)
+  out_filename = File.join(abs_path, filename_no_ext)
+  use_template = (@templatable.include? File.extname(path))
+  if use_template
+    out_filename = "#{out_filename}.html"
+  else
+    out_filename = "#{out_filename}#{ext}"
   end
 
   # Write out the new file.
-  basename = File.basename(path, '.md')
-  abs_html = File.join(abs_path, "#{basename}.html")
-  File.open(abs_html, 'w') do |file|
-    html = @markdown.render(File.read(path))
-    html = @layout.render(
-      'content' => html,
-      'sitetitle' => @site_title,
-      'siteblurb' => @site_blurb
-    )
-    file.write html
+  # This could handle non-text files more efficiently.
+  # Clarity is currently taking precedence (as it works).
+  File.open(out_filename, 'w') do |file|
+    content = File.read(path)
+    if ext == '.md'
+      content = @markdown.render(content)
+    elsif ext == '.txt'
+      content = "<pre>#{content}</pre>"
+    end
+    if use_template
+      content = @layout.render(
+        'content' => content,
+        'sitetitle' => @site_title,
+        'siteblurb' => @site_blurb
+      )
+    end
+    file.write content
   end
 end
 puts '---------------------------------------'

@@ -1,22 +1,17 @@
 <html>
-  <head><link href='/theme.css' rel='stylesheet' type='text/css' /><meta charset='utf-8' /></head>
+  <head>
+    <link href='/theme.css' rel='stylesheet' type='text/css' /><meta charset='utf-8' />
+    <title>{{ sitetitle }}</title>
+  </head>
   <body>
-    <div id='header'>
-      <div id='site-title'>{{ sitetitle }}</div>
-      <div id='site-blurb'>{{ siteblurb }}</div>
+    <div>
+      <strong>{{ sitetitle }}</strong><br />
+      {{ siteblurb }}
     </div>
-    <div id='main'>
-      {{ content }}
-    </div>
+    {{ content }}
     <script>
       var ls = document.links;
-      for (var i = 0, ln = ls.length; i < ln; i++) {
-        if (ls[i].hostname != window.location.hostname) {
-          ls[i].target = '_blank';
-          ls[i].title = 'Opens in a new tab/window';
-          ls[i].className = (ls[i].className + ' external-link').trim();
-        }
-      }
+      for (var i = 0, ln = ls.length; i < ln; i++) if (ls[i].hostname != window.location.hostname) ls[i].target = '_blank';
     </script>
   </body>
 </html>

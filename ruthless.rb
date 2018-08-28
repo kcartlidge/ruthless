@@ -2,6 +2,7 @@
 
 require 'fileutils'
 require 'find'
+require 'inifile'
 require 'redcarpet'
 require 'liquid'
 require 'webrick'
@@ -9,6 +10,7 @@ require 'webrick'
 # Define some of the folder/file options.
 @site_folder = File.join(File.dirname(__FILE__), 'site')
 @content_folder = File.join(File.dirname(__FILE__), 'site', 'content')
+@ini_file = File.join(@site_folder, 'ruthless.ini')
 @layout_file = File.join(File.dirname(__FILE__), 'site', 'layout.liquid')
 @theme_file = File.join(File.dirname(__FILE__), 'site', 'theme.css')
 @html_folder = File.join(File.dirname(__FILE__), 'www')
@@ -47,8 +49,13 @@ def new_file(human_name, filename, content)
 end
 
 # Aborts if the file is not found. Human name is used for errors.
-def must_exist(filename, human_name)
+def file_must_exist(filename, human_name)
   fatal("Cannot find #{human_name} #{filename}") unless File.exist?(filename)
+end
+
+# Aborts if the ini file is missing this section/key.
+def key_must_exist(ini, section, key)
+  fatal("Missing ini value #{section}, #{key}") unless ini[section][key]
 end
 
 # Show the intro.
@@ -67,6 +74,9 @@ if new_site
   fatal('Site folder already exists') if Dir.exist?(@site_folder)
   FileUtils.mkdir_p @content_folder
   fatal('Unable to create folders') unless Dir.exist?(@content_folder)
+  new_file('ruthless.ini', @ini_file, "[SITE]
+title = Ruthless
+blurb = Ruthlessly simple static site generator")
   new_file('home page', File.join(@content_folder, 'index.md'), "# Welcome to Ruthless
 
 To change what appears here ...
@@ -146,15 +156,24 @@ a.external-link:after { vertical-align: top; font-size: 0.7em; content: ' (ext)'
   done('New site created')
 end
 
-# Show the options.
+# Show the folder paths.
 puts '---------------------------------------'
 puts 'Reading ' + @site_folder
 puts 'Creating ' + @html_folder
 
+# Read and show the site options.
+puts 'Reading ' + @ini_file
+fatal('ruthless.ini file not found') unless File.exist?(@ini_file)
+ini = IniFile.load(@ini_file)
+key_must_exist(ini, 'SITE', 'title')
+key_must_exist(ini, 'SITE', 'blurb')
+@site_title = ini['SITE']['title']
+@site_blurb = ini['SITE']['blurb']
+
 # Ensure we have required folders/files.
 fatal('Content folder not found') unless Dir.exist?(@content_folder)
-must_exist(@layout_file, 'layout template')
-must_exist(@theme_file, 'theme styles')
+file_must_exist(@layout_file, 'layout template')
+file_must_exist(@theme_file, 'theme styles')
 Liquid::Template.error_mode = :strict
 @layout = Liquid::Template.parse(File.read(@layout_file))
 
@@ -196,8 +215,8 @@ Find.find(@content_folder) do |path|
     html = @markdown.render(File.read(path))
     html = @layout.render(
       'content' => html,
-      'sitetitle' => 'ruthless.io',
-      'siteblurb' => 'Ruthlessly simple static site generator, written in Ruby.'
+      'sitetitle' => @site_title,
+      'siteblurb' => @site_blurb
     )
     file.write html
   end
@@ -208,6 +227,7 @@ puts 'Generated.'
 # Serve the static site just created.
 puts
 puts 'Starting static server on http://localhost:1337 ... Ctrl+C stops'
+puts
 root = File.join(File.dirname(__FILE__), 'www')
 server = WEBrick::HTTPServer.new Port: 1337, DocumentRoot: root, AccessLog: [], Logger: nil
 trap 'INT' do server.shutdown end

@@ -1,12 +1,18 @@
 #!/usr/bin/ruby
 
+puts '[ensuring dependencies]'
+
 require 'fileutils'
 require 'find'
-require 'inifile'
-require 'redcarpet'
-require 'liquid'
-require 'webrick'
 require 'set'
+require 'bundler/inline'
+gemfile do
+  source 'https://rubygems.org'
+  gem 'inifile'
+  gem 'redcarpet'
+  gem 'liquid'
+  gem 'webrick'
+end
 
 # Define some of the folder/file options.
 @site_folder = File.join(File.dirname(__FILE__), 'site')
@@ -62,7 +68,7 @@ end
 
 # Show the intro.
 puts
-puts 'RUTHLESS 0.5.0  https://ruthless.io'
+puts 'RUTHLESS 0.6.0  https://ruthless.io'
 puts 'Ruthlessly simple static site generator'
 puts
 puts ' --site    Create a new base site'

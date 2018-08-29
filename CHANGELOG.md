@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.6.0] - 2018-08-29
+
+### Added
+
+- Bundler for automatic dependency installation
+
 ## [0.5.0] - 2018-08-28
 
 ### Added

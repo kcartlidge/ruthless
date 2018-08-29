@@ -1,6 +1,6 @@
 # ruthless.io
 
-*Version 0.5.0*
+*Version 0.6.0*
 
 Ruthlessly simple static site generator, written in Ruby.
 
@@ -12,16 +12,27 @@ Ruthlessly simple static site generator, written in Ruby.
 ## Prerequisites
 
 * [Ruby 1.9+](https://www.ruby-lang.org)
-* [inifile](https://github.com/twp/inifile) - ```sudo gem install inifile```
-* [RedCarpet](https://github.com/vmg/redcarpet) - ```sudo gem install redcarpet```
-* [Liquid](https://shopify.github.io/liquid/) - ```sudo gem install liquid```
-* [Webrick](https://github.com/ruby/webrick) - ```sudo gem install webrick```
+* [inifile](https://github.com/twp/inifile)
+* [RedCarpet](https://github.com/vmg/redcarpet)
+* [Liquid](https://shopify.github.io/liquid/)
+* [Webrick](https://github.com/ruby/webrick)
 
 *Webrick is used for serving the static site locally when creating/updating it, not for production delivery of the result.*
 
-## Installing Ruby
+## Installing
+
+**Ruby 1.9+**
 
 You can use the main Ruby site (see link above) installation details, or try [RVM, the Ruby Version Manager](https://rvm.io).
+
+**Gem dependencies**
+
+Upon running, *ruthless* will fetch it's own dependencies via *Bundler*.
+For this to work, Bundler must already be available:
+
+``` sh
+gem install bundler
+```
 
 ## Usage
 

@@ -86,7 +86,10 @@ if new_site
   new_file('ruthless.ini', @ini_file, "[SITE]
 title  = Your Site Name
 blurb  = Welcome to my ruthless-generated site
-footer = Created by <a href='https://ruthless.io' target='_blank'>ruthless.io</a> and <a href='https://www.ruby-lang.org' target='_blank'>Ruby</a>.")
+footer = Created by <a href='https://ruthless.io' target='_blank'>ruthless.io</a> and <a href='https://www.ruby-lang.org' target='_blank'>Ruby</a>.
+
+[OPTIONS]
+extentions = false")
   new_file('home page', File.join(@content_folder, 'index.md'), "# Welcome to Ruthless
 
 For more information, see [the web site](https://ruthless.io).")
@@ -130,6 +133,7 @@ key_must_exist(ini, 'SITE', 'footer')
 @site_title = ini['SITE']['title']
 @site_blurb = ini['SITE']['blurb']
 @site_footer = ini['SITE']['footer']
+@extentions = ini['OPTIONS']['extentions']
 
 # Ensure we have required folders/files.
 fatal('Content folder not found') unless Dir.exist?(@content_folder)
@@ -149,6 +153,7 @@ fatal('Unable to create folder') unless Dir.exist?(@html_folder)
 
 # Render the whole site folder tree.
 puts 'Rendering output'
+puts 'Using page extentions' if @extentions
 puts "  #{File::SEPARATOR}"
 prefix = "#{@content_folder}#{File::SEPARATOR}"
 prefix_length = prefix.length
@@ -173,7 +178,17 @@ Find.find(@content_folder) do |path|
   ext = File.extname(path)
   use_template = (@templatable.include? ext)
   out_filename = File.join(abs_path, filename_no_ext)
-  out_filename += use_template ? '.html' : ext
+
+  # Handle extentionless pages.
+  if @extentions or not use_template
+    out_filename += use_template ? '.html' : ext
+  else
+    unless Dir.exist?(out_filename)
+      FileUtils.mkdir_p out_filename
+      fatal("Unable to create page subfolder #{out_filename}") unless Dir.exist?(out_filename)
+      out_filename = File.join(out_filename, 'index.html')
+    end
+  end
 
   # Write out the new file.
   # This could handle non-text files more efficiently.

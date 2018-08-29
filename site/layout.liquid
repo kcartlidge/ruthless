@@ -9,6 +9,10 @@
       {{ siteblurb }}
     </div>
     {{ content }}
+    <br />
+    <p>
+      <small>{{ sitefooter }}</small>
+    </p>
     <script>
       var ls = document.links;
       for (var i = 0, ln = ls.length; i < ln; i++) if (ls[i].hostname != window.location.hostname) ls[i].target = '_blank';

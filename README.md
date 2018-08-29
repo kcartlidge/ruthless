@@ -111,4 +111,5 @@ This list is complete, though very small as *ruthless* is still in progress.
 
 * ```sitetitle``` - from the ```ruthless.ini``` file
 * ```siteblurb``` - from the ```ruthless.ini``` file
+* ```sitefooter``` - from the ```ruthless.ini``` file
 * ```content``` - the final output from the flow above

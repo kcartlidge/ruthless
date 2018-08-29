@@ -84,8 +84,9 @@ if new_site
   FileUtils.mkdir_p @content_folder
   fatal('Unable to create folders') unless Dir.exist?(@content_folder)
   new_file('ruthless.ini', @ini_file, "[SITE]
-title = Your Site Name
-blurb = Welcome to my ruthless-generated site")
+title  = Your Site Name
+blurb  = Welcome to my ruthless-generated site
+footer = Created by <a href='https://ruthless.io' target='_blank'>ruthless.io</a> and <a href='https://www.ruby-lang.org' target='_blank'>Ruby</a>.")
   new_file('home page', File.join(@content_folder, 'index.md'), "# Welcome to Ruthless
 
 For more information, see [the web site](https://ruthless.io).")
@@ -100,6 +101,10 @@ For more information, see [the web site](https://ruthless.io).")
       {{ siteblurb }}
     </div>
     {{ content }}
+    <br />
+    <p>
+      <small>{{ sitefooter }}</small>
+    </p>
     <script>
       var ls = document.links;
       for (var i = 0, ln = ls.length; i < ln; i++) if (ls[i].hostname != window.location.hostname) ls[i].target = '_blank';
@@ -121,8 +126,10 @@ fatal('ruthless.ini file not found') unless File.exist?(@ini_file)
 ini = IniFile.load(@ini_file)
 key_must_exist(ini, 'SITE', 'title')
 key_must_exist(ini, 'SITE', 'blurb')
+key_must_exist(ini, 'SITE', 'footer')
 @site_title = ini['SITE']['title']
 @site_blurb = ini['SITE']['blurb']
+@site_footer = ini['SITE']['footer']
 
 # Ensure we have required folders/files.
 fatal('Content folder not found') unless Dir.exist?(@content_folder)
@@ -182,7 +189,8 @@ Find.find(@content_folder) do |path|
       content = @layout.render(
         'content' => content,
         'sitetitle' => @site_title,
-        'siteblurb' => @site_blurb
+        'siteblurb' => @site_blurb,
+        'sitefooter' => @site_footer
       )
     end
     file.write content

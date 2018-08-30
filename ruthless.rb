@@ -50,6 +50,9 @@ end
 
 # Create a new file and write the content. Human name is used for errors.
 def new_file(human_name, filename, content)
+  @required_folder = File.dirname(filename)
+  FileUtils.mkdir_p @required_folder
+  fatal("Unable to create folder for file #{filename}") unless Dir.exist?(@required_folder)
   File.open(filename, 'w') do |s|
     s.puts content
   end

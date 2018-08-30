@@ -17,6 +17,7 @@ end
 # Define some of the folder/file options.
 @site_folder = File.join(File.dirname(__FILE__), 'site')
 @content_folder = File.join(File.dirname(__FILE__), 'site', 'content')
+@sample_news_folder = File.join(File.dirname(__FILE__), 'site', 'content', 'news')
 @ini_file = File.join(@site_folder, 'ruthless.ini')
 @layout_file = File.join(File.dirname(__FILE__), 'site', 'layout.liquid')
 @theme_file = File.join(File.dirname(__FILE__), 'site', 'theme.css')
@@ -93,9 +94,9 @@ footer = Created by <a href='https://ruthless.io' target='_blank'>ruthless.io</a
 
 [OPTIONS]
 extentions = false")
-  new_file('home page', File.join(@content_folder, 'index.md'), "# Welcome to Ruthless
-
-For more information, see [the web site](https://ruthless.io).")
+  new_file('home page', File.join(@content_folder, 'index.md'), "# Welcome to Ruthless\n\nFor more information, see [the web site](https://ruthless.io).\n\n* [Sample News](/news)")
+  new_file('sample news page', File.join(@sample_news_folder, 'index.md'), "# Sample News\n\n* [Sample News Item](sample-news-item)\n* [Home](/)")
+  new_file('sample news item page', File.join(@sample_news_folder, 'sample-news-item.md'), "# Sample News Item\n\n* [Back to Sample News](/news)\n* [Home](/)")
   new_file('template', @layout_file, "<html>
   <head>
     <link href='/theme.css' rel='stylesheet' type='text/css' /><meta charset='utf-8' />

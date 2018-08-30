@@ -70,6 +70,34 @@ def key_must_exist(ini, section, key)
   fatal("Missing ini value #{section}, #{key}") unless ini[section][key]
 end
 
+# Load in the given file as an array of strings for yaml metadata and content.
+def get_metadata_and_content(filename)
+  metadata = Hash.new
+  content = ''
+  in_meta = false
+  lc = 0
+  f = File.open(filename, 'r')
+  f.each_line do |line|
+    lc += 1
+    if lc == 1 && line.start_with?('---')
+      in_meta = true
+    elsif lc > 1 && in_meta && line.start_with?('---')
+        in_meta = false
+    else
+      if in_meta
+        bits = line.rstrip.split(': ')  # extra space means trim each bit
+        fatal("Expected key=value, got #{line}") unless bits.length == 2
+        fatal("Key is empty in #{line}") unless bits[0].length > 0
+        fatal("Value is empty in #{line}") unless bits[1].length > 0
+        metadata[bits[0]] = bits[1]
+      else
+        content += (line.rstrip + "\n")
+      end
+    end
+  end
+  { metadata: metadata, content: content }
+end
+
 # Show the intro.
 puts
 puts 'RUTHLESS 0.6.0  https://ruthless.io'

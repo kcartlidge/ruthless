@@ -183,13 +183,14 @@ Find.find(@content_folder) do |path|
   use_template = (@templatable.include? ext)
   out_filename = File.join(abs_path, filename_no_ext)
 
-  # Handle extentionless pages.
-  if @extentions or not use_template
+  # Extentions/index page? Override for templates else use original.
+  if @extentions || !use_template || (filename_no_ext == 'index')
     out_filename += use_template ? '.html' : ext
   else
+    # No extentions? Create a folder and add an index file.
     unless Dir.exist?(out_filename)
       FileUtils.mkdir_p out_filename
-      fatal("Unable to create page subfolder #{out_filename}") unless Dir.exist?(out_filename)
+      fatal("Unable to create page folder #{out_filename}") unless Dir.exist?(out_filename)
       out_filename = File.join(out_filename, 'index.html')
     end
   end

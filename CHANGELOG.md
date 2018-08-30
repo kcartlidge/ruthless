@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.7.0] - 2018-08-30
+
+### Added
+
+- Content front matter (metadata) support
+
 ## [0.6.0] - 2018-08-29
 
 ### Added

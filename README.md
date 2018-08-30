@@ -1,6 +1,6 @@
 # ruthless.io
 
-*Version 0.6.0*
+*Version 0.7.0*
 
 Ruthlessly simple static site generator, written in Ruby.
 
@@ -113,3 +113,14 @@ This list is complete, though very small as *ruthless* is still in progress.
 * ```siteblurb``` - from the ```ruthless.ini``` file
 * ```sitefooter``` - from the ```ruthless.ini``` file
 * ```content``` - the final output from the flow above
+
+In addition, by using content front matter (YAML metadata) you can provide any key/value information you like and it will make it's way to the template, with the exception of the ```site...``` ones above which cannot be replaced:
+
+``` yaml
+---
+title: Welcome to Ruthless
+dated: 2018-08-27
+---
+
+For more information, see [the web site](https://ruthless.io).
+```

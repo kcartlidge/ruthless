@@ -100,7 +100,7 @@ end
 
 # Show the intro.
 puts
-puts 'RUTHLESS 0.6.0  https://ruthless.io'
+puts 'RUTHLESS 0.7.0  https://ruthless.io'
 puts 'Ruthlessly simple static site generator'
 puts
 puts ' --site    Create a new base site'
@@ -122,9 +122,9 @@ footer = Created by <a href='https://ruthless.io' target='_blank'>ruthless.io</a
 
 [OPTIONS]
 extentions = false")
-  new_file('home page', File.join(@content_folder, 'index.md'), "# Welcome to Ruthless\n\nFor more information, see [the web site](https://ruthless.io).\n\n* [Sample News](/news)")
+  new_file('home page', File.join(@content_folder, 'index.md'), "---\ntitle: Welcome to Ruthless\ndated: 2018-08-27\n---\n\nFor more information, see [the web site](https://ruthless.io).\n\n* [Sample News](/news)")
   new_file('sample news page', File.join(@sample_news_folder, 'index.md'), "# Sample News\n\n* [Sample News Item](sample-news-item)\n* [Home](/)")
-  new_file('sample news item page', File.join(@sample_news_folder, 'sample-news-item.md'), "# Sample News Item\n\n* [Back to Sample News](/news)\n* [Home](/)")
+  new_file('sample news item page', File.join(@sample_news_folder, 'sample-news-item.md'), "---\ntitle: Your Sample News Item\n---\n\n* [Back to Sample News](/news)\n* [Home](/)")
   new_file('template', @layout_file, "<html>
   <head>
     <link href='/theme.css' rel='stylesheet' type='text/css' /><meta charset='utf-8' />
@@ -135,6 +135,7 @@ extentions = false")
       <strong>{{ sitetitle }}</strong><br />
       {{ siteblurb }}
     </div>
+    <h1>{{ title}}</h1>
     {{ content }}
     <br />
     <p>
@@ -227,19 +228,21 @@ Find.find(@content_folder) do |path|
   # This could handle non-text files more efficiently.
   # Clarity is currently taking precedence (as it works).
   File.open(out_filename, 'w') do |file|
-    content = File.read(path)
+    src = get_metadata_and_content(path)
+    content = src[:content]
+    # content = File.read(path)
     if ext == '.md'
       content = @markdown.render(content)
     elsif ext == '.txt'
       content = "<pre>#{content}</pre>"
     end
     if use_template
-      content = @layout.render(
-        'content' => content,
-        'sitetitle' => @site_title,
-        'siteblurb' => @site_blurb,
-        'sitefooter' => @site_footer
-      )
+      data = src[:metadata]
+      data['content'] = content
+      data['sitetitle'] = @site_title
+      data['siteblurb'] = @site_blurb
+      data['sitefooter'] = @site_footer
+      content = @layout.render(data)
     end
     file.write content
   end

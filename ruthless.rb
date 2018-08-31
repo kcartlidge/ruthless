@@ -228,21 +228,22 @@ Find.find(@content_folder) do |path|
   # This could handle non-text files more efficiently.
   # Clarity is currently taking precedence (as it works).
   File.open(out_filename, 'w') do |file|
-    src = get_metadata_and_content(path)
-    content = src[:content]
-    # content = File.read(path)
-    if ext == '.md'
-      content = @markdown.render(content)
-    elsif ext == '.txt'
-      content = "<pre>#{content}</pre>"
-    end
     if use_template
+      src = get_metadata_and_content(path)
+      content = src[:content]
+      if ext == '.md'
+        content = @markdown.render(content)
+      elsif ext == '.txt'
+        content = "<pre>#{content}</pre>"
+      end
       data = src[:metadata]
       data['content'] = content
       data['sitetitle'] = @site_title
       data['siteblurb'] = @site_blurb
       data['sitefooter'] = @site_footer
       content = @layout.render(data)
+    else
+      content = File.read(path)
     end
     file.write content
   end

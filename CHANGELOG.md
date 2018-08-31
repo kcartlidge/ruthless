@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.7.1] - 2018-08-31
+
+### Added
+
+- Support main menu
+
 ## [0.7.0] - 2018-08-30
 
 ### Added

@@ -1,6 +1,6 @@
 # ruthless.io
 
-*Version 0.7.0*
+*Version 0.7.1*
 
 Ruthlessly simple static site generator, written in Ruby.
 
@@ -90,6 +90,14 @@ The ```site``` folder should have a ```ruthless.ini``` file with the following o
 [SITE]
 title = Ruthless
 blurb = Ruthlessly simple static site generator
+footer = Created by <a href='https://ruthless.io' target='_blank'>ruthless.io</a> and <a href='https://www.ruby-lang.org' target='_blank'>Ruby</a>.
+
+[OPTIONS]
+extentions = false
+
+[MENU]
+Home = /
+Latest = /news
 ```
 
 ### Basic flow

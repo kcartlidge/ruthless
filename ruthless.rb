@@ -23,6 +23,7 @@ end
 @theme_file = File.join(File.dirname(__FILE__), 'site', 'theme.css')
 @html_folder = File.join(File.dirname(__FILE__), 'www')
 @templatable = ['.md', '.txt'].to_set
+@menu = []
 
 # Set up markdown rendering defaults.
 md_opts = {
@@ -100,7 +101,7 @@ end
 
 # Show the intro.
 puts
-puts 'RUTHLESS 0.7.0  https://ruthless.io'
+puts 'RUTHLESS 0.7.1  https://ruthless.io'
 puts 'Ruthlessly simple static site generator'
 puts
 puts ' --site    Create a new base site'
@@ -121,7 +122,11 @@ blurb  = Welcome to my ruthless-generated site
 footer = Created by <a href='https://ruthless.io' target='_blank'>ruthless.io</a> and <a href='https://www.ruby-lang.org' target='_blank'>Ruby</a>.
 
 [OPTIONS]
-extentions = false")
+extentions = false
+
+[MENU]
+Home = /
+Latest = /news")
   new_file('home page', File.join(@content_folder, 'index.md'), "---\ntitle: Welcome to Ruthless\ndated: 2018-08-27\n---\n\nFor more information, see [the web site](https://ruthless.io).\n\n* [Sample News](/news)")
   new_file('sample news page', File.join(@sample_news_folder, 'index.md'), "# Sample News\n\n* [Sample News Item](sample-news-item)\n* [Home](/)")
   new_file('sample news item page', File.join(@sample_news_folder, 'sample-news-item.md'), "---\ntitle: Your Sample News Item\n---\n\n* [Back to Sample News](/news)\n* [Home](/)")
@@ -134,6 +139,11 @@ extentions = false")
     <div>
       <strong>{{ sitetitle }}</strong><br />
       {{ siteblurb }}
+      <p>
+        {% for option in sitemenu %}
+          {{ option }}
+        {% endfor %}
+      </p>
     </div>
     <h1>{{ title}}</h1>
     {{ content }}
@@ -167,6 +177,15 @@ key_must_exist(ini, 'SITE', 'footer')
 @site_blurb = ini['SITE']['blurb']
 @site_footer = ini['SITE']['footer']
 @extentions = ini['OPTIONS']['extentions']
+
+# Populate the (optional) menu.
+ini.each_section do |section|
+  if section == 'MENU'
+    ini[section].each do |k,v|
+      @menu.push("<a href=\"#{v}\">#{k}</a>")
+    end
+  end
+end
 
 # Ensure we have required folders/files.
 fatal('Content folder not found') unless Dir.exist?(@content_folder)
@@ -241,6 +260,7 @@ Find.find(@content_folder) do |path|
       data['sitetitle'] = @site_title
       data['siteblurb'] = @site_blurb
       data['sitefooter'] = @site_footer
+      data['sitemenu'] = @menu
       content = @layout.render(data)
     else
       content = File.read(path)

@@ -21,9 +21,9 @@ Ruthlessly simple static site generator, written in Ruby.
 
 ## Installing
 
-**Ruby 1.9+**
+**Ruby 2+**
 
-You can use the main Ruby site (see link above) installation details, or try [RVM, the Ruby Version Manager](https://rvm.io).
+You can use the main Ruby site (see link above) installation details, or try [RVM, the Ruby Version Manager](https://rvm.io). On Windows the [Ruby+Devkit 2.4.X](https://rubyinstaller.org/downloads/) helps, but be sure to do the full (larger) install when prompted.
 
 **Gem dependencies**
 
@@ -32,6 +32,16 @@ For this to work, Bundler must already be available:
 
 ``` sh
 gem install bundler
+```
+
+## Debugging in Visual Studio Code
+
+* Add the [Ruby extention by Peng Lv](https://marketplace.visualstudio.com/items?itemName=rebornix.Ruby)
+* Install the debugging dependencies:
+``` sh
+gem install bundler
+gem install ruby-debug-ide
+gem install debase
 ```
 
 ## Usage

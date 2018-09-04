@@ -4,21 +4,22 @@
     <title>{{ sitetitle }}</title>
   </head>
   <body>
-    <div>
+    <div id='header'>
       <strong>{{ sitetitle }}</strong><br />
       {{ siteblurb }}
-      <p>
+      <div id='site-menu'>
         {% for option in sitemenu %}
           {{ option }}
         {% endfor %}
-      </p>
+      </div>
     </div>
-    <h1>{{ title}}</h1>
-    {{ content }}
-    <br />
-    <p>
+    <div id='main'>
+      <h1>{{ title}}</h1>
+      {{ content }}
+    </div>
+    <div id='footer'>
       <small>{{ sitefooter }}</small>
-    </p>
+    </div>
     <script>
       var ls = document.links;
       for (var i = 0, ln = ls.length; i < ln; i++) if (ls[i].hostname != window.location.hostname) ls[i].target = '_blank';

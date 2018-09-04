@@ -11,7 +11,7 @@ Ruthlessly simple static site generator, written in Ruby.
 
 ## Prerequisites
 
-* [Ruby 1.9+](https://www.ruby-lang.org)
+* [Ruby 2+](https://www.ruby-lang.org) (v1.9+ should also work)
 * [inifile](https://github.com/twp/inifile)
 * [RedCarpet](https://github.com/vmg/redcarpet)
 * [Liquid](https://shopify.github.io/liquid/)
@@ -34,32 +34,22 @@ For this to work, Bundler must already be available:
 gem install bundler
 ```
 
-## Debugging in Visual Studio Code
-
-* Add the [Ruby extention by Peng Lv](https://marketplace.visualstudio.com/items?itemName=rebornix.Ruby)
-* Install the debugging dependencies:
-``` sh
-gem install bundler
-gem install ruby-debug-ide
-gem install debase
-```
-
 ## Usage
 
 * Ensure you have the prerequisites installed (see above).
 * Create a folder and drop the ```ruthless.rb``` script into it.
-* Run ```ruby ruthless.rb --site``` to generate a stub site (in a new folder named ```site```).
-* Run ```ruby ruthless.rb``` to render the static version.
-  * Or run ```ruby ruthless.rb --serve``` to also serve the created static site.
-* The site will be created in a new ```www``` folder alongside the ```site``` one.
+* Run ```ruby ruthless.rb --site``` to generate a simple site in a new folder (named ```site```).
+* Run ```ruby ruthless.rb``` to render a static version of the site.
+  * Running ```ruby ruthless.rb --serve``` also serves the created site.
+* The static site will be in a ```www``` folder alongside the ```site``` one.
 
 *Any existing ```www``` folder will be replaced (permissions permitting).*
 
 ## Site folder structure
 
-Content is written in [Markdown](https://daringfireball.net/projects/markdown/) files, in a ```content``` folder within which your site structure is created.
+Content is written in [Markdown](https://daringfireball.net/projects/markdown/) files in a ```content``` folder. Your site structure will mirror the ```content``` folder structure.
 
-Running with the ```--site``` option will create the structure for you (with the files below).
+Running with the ```--site``` option will create this structure for you, along with some extra files (shown below).
 
 ```
 ruthless.rb
@@ -87,10 +77,6 @@ site/
     blog/
       how-i-wrote-this-site.md
 ```
-
-## Creating site content
-
-Run with the ```--site``` option to create your initial structure, or manually create it as shown above.
 
 ### Configuration
 
@@ -125,6 +111,8 @@ The site is rendered using your content, combined with the ```layout.liquid``` t
 
 ### Allowed properties in the template
 
+#### Site
+
 This list is complete, though very small as *ruthless* is still in progress.
 
 * ```sitetitle``` - from the ```ruthless.ini``` file
@@ -132,7 +120,11 @@ This list is complete, though very small as *ruthless* is still in progress.
 * ```sitefooter``` - from the ```ruthless.ini``` file
 * ```content``` - the final output from the flow above
 
-In addition, by using content front matter (YAML metadata) you can provide any key/value information you like and it will make it's way to the template, with the exception of the ```site...``` ones above which cannot be replaced:
+#### Content
+
+By using content front matter (as flat YAML metadata) *you can provide any key/value information you like and it will make it's way to the template*, with the exception of the ones above which are built in.
+
+For example:
 
 ``` yaml
 ---
@@ -141,4 +133,16 @@ dated: 2018-08-27
 ---
 
 For more information, see [the web site](https://ruthless.io).
+```
+
+---
+
+## Debugging in Visual Studio Code
+
+* Add the [Ruby extention by Peng Lv](https://marketplace.visualstudio.com/items?itemName=rebornix.Ruby)
+* Install the debugging dependencies:
+``` sh
+gem install bundler
+gem install ruby-debug-ide
+gem install debase
 ```

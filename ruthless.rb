@@ -1,5 +1,6 @@
 #!/usr/bin/ruby
 
+version = "1.0.0"
 puts '[ensuring dependencies]'
 
 require 'fileutils'
@@ -101,7 +102,7 @@ end
 
 # Show the intro.
 puts
-puts 'RUTHLESS 0.7.1  https://ruthless.io'
+puts "RUTHLESS #{version}  https://ruthless.io"
 puts 'Ruthlessly simple static site generator'
 puts
 puts ' --site    Create a new base site'
@@ -245,10 +246,8 @@ Find.find(@content_folder) do |path|
   end
 
   # Write out the new file.
-  # This could handle non-text files more efficiently.
-  # Clarity is currently taking precedence (as it works).
-  File.open(out_filename, 'w') do |file|
-    if use_template
+  if use_template
+    File.open(out_filename, 'w') do |file|
       src = get_metadata_and_content(path)
       content = src[:content]
       if ext == '.md'
@@ -263,10 +262,10 @@ Find.find(@content_folder) do |path|
       data['sitefooter'] = @site_footer
       data['sitemenu'] = @menu
       content = @layout.render(data)
-    else
-      content = File.read(path)
+      file.write content
     end
-    file.write content
+  else
+    FileUtils.copy(path, out_filename)
   end
 end
 puts '---------------------------------------'

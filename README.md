@@ -1,6 +1,6 @@
 # ruthless.io
 
-*Version 0.7.1*
+*Version 1.0.0*
 
 Ruthlessly simple static site generator, written in Ruby.
 

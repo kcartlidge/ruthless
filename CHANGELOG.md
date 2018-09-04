@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.0.0] - 2018-09-04
+
+### Changed
+
+- More efficient processing of non-templated files
+- Image copies don't break on Windows
+
 ## [0.7.1] - 2018-08-31
 
 ### Added

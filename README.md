@@ -6,7 +6,6 @@ Ruthlessly simple static site generator, written in Ruby.
 
 *Note that this is designed to be a single file self-contained quick solution. It produces themable Markdown-based static sites as expected, but the codebase (whilst being compact, clear, and commented) is not idiomatic object-oriented Ruby. This is by design, for brevity and simplicity.*
 
-* See [the ruthless website](https://ruthless.io) for details on how to create your own site (some briefer details appear below).
 * See the [changelog](https://github.com/kcartlidge/ruthless/blob/master/CHANGELOG.md) for a version history.
 
 ---

@@ -1,6 +1,6 @@
 #!/usr/bin/ruby
 
-version = "1.0.0"
+version = "1.0.1"
 puts '[ensuring dependencies]'
 
 require 'fileutils'
@@ -105,8 +105,10 @@ puts
 puts "RUTHLESS #{version}  https://ruthless.io"
 puts 'Ruthlessly simple static site generator'
 puts
-puts ' --site    Create a new base site'
-puts ' --serve   Create and also serve the site'
+puts ' --site    Create a new site'
+puts ' --serve   Serve an existing site'
+puts
+puts 'Sites are always in a "site" subfolder'
 puts
 
 # Create a new site if requested.

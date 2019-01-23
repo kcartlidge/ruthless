@@ -1,8 +1,8 @@
 ---
 title: Welcome to Ruthless
-dated: 2018-08-27
 ---
 
-For more information, see [the web site](https://ruthless.io).
+For more information, see [the GitHub repository](https://github.com/kcartlidge/ruthless).
 
-* [Sample News](/news)
+* [Latest News](/news)
+* [About Ruthless](/about)

@@ -120,23 +120,27 @@ if new_site
   FileUtils.mkdir_p @content_folder
   fatal('Unable to create folders') unless Dir.exist?(@content_folder)
   new_file('ruthless.ini', @ini_file, "[SITE]
-title  = Your Site Name
-blurb  = Welcome to my ruthless-generated site
-footer = Created by <a href='https://ruthless.io' target='_blank'>ruthless.io</a> and <a href='https://www.ruby-lang.org' target='_blank'>Ruby</a>.
+title  = Sample Ruthless Site
+blurb  = Welcome to my Ruthless-generated site
+footer = Created by <a href='https://github.com/kcartlidge/ruthless' target='_blank'>Ruthless.io</a> and <a href='https://www.ruby-lang.org' target='_blank'>Ruby</a>.
 
 [OPTIONS]
 extentions = false
 
 [MENU]
 Home = /
-Latest = /news")
-  new_file('home page', File.join(@content_folder, 'index.md'), "---\ntitle: Welcome to Ruthless\ndated: 2018-08-27\n---\n\nFor more information, see [the web site](https://ruthless.io).\n\n* [Sample News](/news)")
-  new_file('sample news page', File.join(@sample_news_folder, 'index.md'), "# Sample News\n\n* [Sample News Item](sample-news-item)\n* [Home](/)")
-  new_file('sample news item page', File.join(@sample_news_folder, 'sample-news-item.md'), "---\ntitle: Your Sample News Item\n---\n\n* [Back to Sample News](/news)\n* [Home](/)")
+Latest News = /news
+About = /about")
+  new_file('home page', File.join(@content_folder, 'index.md'), "---\ntitle: Welcome to Ruthless\n---\n\nFor more information, see [the GitHub repository](https://github.com/kcartlidge/ruthless).\n\n* [Latest News](/news)\n* [About Ruthless](/about)")
+  new_file('about page', File.join(@content_folder, 'about.md'), "---\ntitle: About Ruthless\n---\n\nLorem ipsum dolor sit amet adipiscing.")
+  new_file('sample news page', File.join(@sample_news_folder, 'index.md'), "---\ntitle: Latest News\n---\n\nLorem ipsum dolor sit amet adipiscing.\n\n* [Sample News Item 1](sample-news-item-1)\n* [Sample News Item 2](sample-news-item-2)")
+  new_file('sample news item 1 page', File.join(@sample_news_folder, 'sample-news-item-1.md'), "---\ntitle: Sample News Item #1\ndated: August 27, 2018\n---\n\nLorem ipsum dolor sit amet adipiscing.\n\n* [Back to the Latest News](/news)")
+  new_file('sample news item 2 page', File.join(@sample_news_folder, 'sample-news-item-2.md'), "---\ntitle: Sample News Item #2\ndated: January 23, 2019\n---\n\nLorem ipsum dolor sit amet adipiscing.\n\n* [Back to the Latest News](/news)")
   new_file('template', @layout_file, "<html>
   <head>
-    <link href='/theme.css' rel='stylesheet' type='text/css' /><meta charset='utf-8' />
-    <title>{{ sitetitle }}</title>
+    <link href='/theme.css' rel='stylesheet' type='text/css' />
+    <meta charset='utf-8' />
+    <title>{{ title}} -- {{ sitetitle }}</title>
   </head>
   <body>
     <div id='header'>
@@ -150,6 +154,7 @@ Latest = /news")
     </div>
     <div id='main'>
       <h1>{{ title}}</h1>
+      {% if dated %}<div class='dated'>{{ dated }}</div>{% endif %}
       {{ content }}
     </div>
     <div id='footer'>
@@ -161,7 +166,25 @@ Latest = /news")
     </script>
   </body>
 </html>")
-  new_file('theme', @theme_file, "body { font-family: 'Noto Sans', Verdana, 'Helvetica Neue', Helvetica, sans-serif; font-size: 14pt; background: #f8f8f8; color: #444; margin: 0; padding: 2rem; }")
+  new_file('theme', @theme_file, "body { font-family: 'Noto Sans', Verdana, 'Helvetica Neue', Helvetica, sans-serif; font-size: 13pt; background: #f8f8f8; color: #444; margin: 0; padding: 0.5rem 2rem; }
+a { color: #06d; text-decoration: none; border-bottom: solid 1px #8af; }
+a:hover { color: #359fe0; }
+#header, #main, #footer { max-width: 50rem; margin: 0 auto; }
+#header { margin-bottom: 4rem; }
+#main { line-height: 140%; }
+#footer { margin-top: 5rem; font-size: 0.9rem; }
+#site-menu { margin-top: 0.5rem; }
+#site-menu a { margin-right: 0.25rem; white-space: nowrap; }
+#main img { max-width: 10rem; max-height: 10rem; float: right; margin: 1rem 0 1rem 2rem; background: #fff; padding: 0.4rem; box-shadow: 0 0 8px #00000033; }
+#header strong { font-size: 1.3rem; }
+h1,h2,h3,h4,h5,h6 { line-height: 110%; }
+table { margin: 2rem 0; }
+th, td { padding: 0.1rem 1rem 0.1rem 0; border-bottom: solid 1px #ccc; }
+li { margin: 0.25em 0; }
+pre { overflow: scroll; }
+pre, code { background: #fff; color: #222; padding: 0.2rem 0.3rem; border: solid 2px #aaa; }
+pre code { border: 0; padding: 0; }
+.dated { font-size: 0.8rem; margin-top: -1.5rem; color: #666; text-transform: uppercase; }")
   done('New site created')
 end
 

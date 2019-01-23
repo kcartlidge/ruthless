@@ -6,6 +6,16 @@ Ruthlessly simple static site generator, written in Ruby.
 
 * See the [changelog](https://github.com/kcartlidge/ruthless/blob/master/CHANGELOG.md) for a version history.
 
+## Benefits
+
+* It's a **single file** - no installation needed, just drop a copy of the ```ruthless.rb``` script straight into any folder to start using it.
+* You can **create a complete sample site**, including **layout** and **theme**, simply by running the script.
+* Optionally generate pages that **don't need .html extentions even where the server doesn't support that option**.
+* Other than Ruby and Bundler, it **bootstraps it's own dependencies** for ease of use.
+* Write your content using **Markdown** or **plain text** files and they will use your **template and theme**. Other files are simply copied in unchanged.
+* **Built-in server** option for local development.
+* The Markdown files can have **any YAML** content you like and it will be **passed to your layout**.
+
 ---
 
 ## Installing

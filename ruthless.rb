@@ -1,6 +1,6 @@
 #!/usr/bin/ruby
 
-version = "1.0.1"
+version = "1.1.0"
 puts '[ensuring dependencies]'
 
 require 'fileutils'
@@ -14,6 +14,21 @@ gemfile do
   gem 'liquid'
   gem 'webrick'
 end
+
+# Show the intro.
+puts
+puts "RUTHLESS #{version}  https://ruthless.io"
+puts 'Ruthlessly simple static site generator'
+puts
+puts 'ruby ruthless.rb <command>'
+puts '  new     Create a new site'
+puts '  build   Generate the site output'
+puts '  serve   Build and serve the site'
+puts
+puts 'The site should be in a "site" subfolder'
+puts 'Builds are put in a sibling "www" folder'
+puts
+
 
 # Define some of the folder/file options.
 @site_folder = File.join(File.dirname(__FILE__), 'site')
@@ -40,7 +55,7 @@ md_opts = {
 
 # Display the error message then abort.
 def fatal(message)
-  puts '---------------------------------------'
+  puts '-------------------------------------------'
   puts "ERROR: #{message}"
   abort
 end
@@ -100,21 +115,10 @@ def get_metadata_and_content(filename)
   { metadata: metadata, content: content }
 end
 
-# Show the intro.
-puts
-puts "RUTHLESS #{version}  https://ruthless.io"
-puts 'Ruthlessly simple static site generator'
-puts
-puts ' --site    Create a new site'
-puts ' --serve   Serve an existing site'
-puts
-puts 'Sites are always in a "site" subfolder'
-puts
-
 # Create a new site if requested.
-new_site = (ARGV[0] && (ARGV[0] == '--site'))
+new_site = (ARGV[0] && (ARGV[0] == 'new'))
 if new_site
-  puts '---------------------------------------'
+  puts '-------------------------------------------'
   puts 'Creating new site and content folders'
   fatal('Site folder already exists') if Dir.exist?(@site_folder)
   FileUtils.mkdir_p @content_folder
@@ -188,120 +192,122 @@ pre code { border: 0; padding: 0; }
   done('New site created')
 end
 
-# Show the folder paths.
-puts '---------------------------------------'
-puts 'Reading ' + @site_folder
-puts 'Creating ' + @html_folder
+# Build the site if requested.
+build_site = (ARGV[0] && (ARGV[0] == 'build' or ARGV[0] == 'serve'))
+if build_site
+  # Show the folder paths.
+  puts '-------------------------------------------'
+  puts 'Reading ' + @site_folder
+  puts 'Creating ' + @html_folder
 
-# Read and show the site options.
-puts 'Reading ' + @ini_file
-fatal('ruthless.ini file not found') unless File.exist?(@ini_file)
-ini = IniFile.load(@ini_file)
-key_must_exist(ini, 'SITE', 'title')
-key_must_exist(ini, 'SITE', 'blurb')
-key_must_exist(ini, 'SITE', 'footer')
-@site_title = ini['SITE']['title']
-@site_blurb = ini['SITE']['blurb']
-@site_footer = ini['SITE']['footer']
-@extentions = ini['OPTIONS']['extentions']
+  # Read and show the site options.
+  puts 'Reading ' + @ini_file
+  fatal('ruthless.ini file not found') unless File.exist?(@ini_file)
+  ini = IniFile.load(@ini_file)
+  key_must_exist(ini, 'SITE', 'title')
+  key_must_exist(ini, 'SITE', 'blurb')
+  key_must_exist(ini, 'SITE', 'footer')
+  @site_title = ini['SITE']['title']
+  @site_blurb = ini['SITE']['blurb']
+  @site_footer = ini['SITE']['footer']
+  @extentions = ini['OPTIONS']['extentions']
 
-# Populate the (optional) menu.
-ini.each_section do |section|
-  if section == 'MENU'
-    ini[section].each do |k,v|
-      @menu.push("<a href=\"#{v}\">#{k}</a>")
-    end
-  end
-end
-
-# Ensure we have required folders/files.
-fatal('Content folder not found') unless Dir.exist?(@content_folder)
-file_must_exist(@layout_file, 'layout template')
-file_must_exist(@theme_file, 'theme styles')
-Liquid::Template.error_mode = :strict
-@layout = Liquid::Template.parse(File.read(@layout_file))
-
-# Ensure we have a fresh, empty, output folder.
-if Dir.exist?(@html_folder)
-  puts 'Removing output folder'
-  fatal('Unable to remove folder') unless FileUtils.rmtree(@html_folder)
-end
-puts 'Creating output folder'
-FileUtils.mkdir @html_folder
-fatal('Unable to create folder') unless Dir.exist?(@html_folder)
-
-# Render the whole site folder tree.
-puts 'Rendering output'
-puts 'Using page extentions' if @extentions
-puts "  #{File::SEPARATOR}"
-prefix = "#{@content_folder}#{File::SEPARATOR}"
-prefix_length = prefix.length
-FileUtils.copy(@theme_file, File.join(@html_folder, 'theme.css'))
-Find.find(@content_folder) do |path|
-  next if File.directory? path
-  fatal("Expected filename to start with #{prefix} - #{path}") unless path.start_with?(prefix)
-
-  # Derive a path/filename based on the site vs output folders.
-  rel_path = File.dirname(path[prefix_length, path.length])
-  abs_path = File.join(@html_folder, rel_path)
-
-  # Create (and display) new subfolders as they are needed.
-  unless Dir.exist?(abs_path)
-    FileUtils.mkdir_p abs_path
-    fatal("Unable to create content subfolder #{abs_path}") unless Dir.exist?(abs_path)
-    puts "  #{File::SEPARATOR}#{rel_path}"
-  end
-
-  # Derive the output filename.
-  filename_no_ext = File.basename(path, '.*')
-  ext = File.extname(path)
-  use_template = (@templatable.include? ext)
-  out_filename = File.join(abs_path, filename_no_ext)
-
-  # Extentions/index page? Override for templates else use original.
-  if @extentions || !use_template || (filename_no_ext == 'index')
-    out_filename += use_template ? '.html' : ext
-  else
-    # No extentions? Create a folder and add an index file.
-    unless Dir.exist?(out_filename)
-      FileUtils.mkdir_p out_filename
-      fatal("Unable to create page folder #{out_filename}") unless Dir.exist?(out_filename)
-      out_filename = File.join(out_filename, 'index.html')
-    end
-  end
-
-  # Write out the new file.
-  if use_template
-    File.open(out_filename, 'w') do |file|
-      src = get_metadata_and_content(path)
-      content = src[:content]
-      if ext == '.md'
-        content = @markdown.render(content)
-      elsif ext == '.txt'
-        content = "<pre>#{content}</pre>"
+  # Populate the (optional) menu.
+  ini.each_section do |section|
+    if section == 'MENU'
+      ini[section].each do |k,v|
+        @menu.push("<a href=\"#{v}\">#{k}</a>")
       end
-      data = src[:metadata]
-      data['content'] = content
-      data['sitetitle'] = @site_title
-      data['siteblurb'] = @site_blurb
-      data['sitefooter'] = @site_footer
-      data['sitemenu'] = @menu
-      content = @layout.render(data)
-      file.write content
     end
-  else
-    FileUtils.copy(path, out_filename)
   end
+
+  # Ensure we have required folders/files.
+  fatal('Content folder not found') unless Dir.exist?(@content_folder)
+  file_must_exist(@layout_file, 'layout template')
+  file_must_exist(@theme_file, 'theme styles')
+  Liquid::Template.error_mode = :strict
+  @layout = Liquid::Template.parse(File.read(@layout_file))
+
+  # Ensure we have a fresh, empty, output folder.
+  if Dir.exist?(@html_folder)
+    puts 'Removing output folder'
+    fatal('Unable to remove folder') unless FileUtils.rmtree(@html_folder)
+  end
+  puts 'Creating output folder'
+  FileUtils.mkdir @html_folder
+  fatal('Unable to create folder') unless Dir.exist?(@html_folder)
+
+  # Render the whole site folder tree.
+  puts 'Rendering output'
+  puts 'Using page extentions' if @extentions
+  puts "  #{File::SEPARATOR}"
+  prefix = "#{@content_folder}#{File::SEPARATOR}"
+  prefix_length = prefix.length
+  FileUtils.copy(@theme_file, File.join(@html_folder, 'theme.css'))
+  Find.find(@content_folder) do |path|
+    next if File.directory? path
+    fatal("Expected filename to start with #{prefix} - #{path}") unless path.start_with?(prefix)
+
+    # Derive a path/filename based on the site vs output folders.
+    rel_path = File.dirname(path[prefix_length, path.length])
+    abs_path = File.join(@html_folder, rel_path)
+
+    # Create (and display) new subfolders as they are needed.
+    unless Dir.exist?(abs_path)
+      FileUtils.mkdir_p abs_path
+      fatal("Unable to create content subfolder #{abs_path}") unless Dir.exist?(abs_path)
+      puts "  #{File::SEPARATOR}#{rel_path}"
+    end
+
+    # Derive the output filename.
+    filename_no_ext = File.basename(path, '.*')
+    ext = File.extname(path)
+    use_template = (@templatable.include? ext)
+    out_filename = File.join(abs_path, filename_no_ext)
+
+    # Extentions/index page? Override for templates else use original.
+    if @extentions || !use_template || (filename_no_ext == 'index')
+      out_filename += use_template ? '.html' : ext
+    else
+      # No extentions? Create a folder and add an index file.
+      unless Dir.exist?(out_filename)
+        FileUtils.mkdir_p out_filename
+        fatal("Unable to create page folder #{out_filename}") unless Dir.exist?(out_filename)
+        out_filename = File.join(out_filename, 'index.html')
+      end
+    end
+
+    # Write out the new file.
+    if use_template
+      File.open(out_filename, 'w') do |file|
+        src = get_metadata_and_content(path)
+        content = src[:content]
+        if ext == '.md'
+          content = @markdown.render(content)
+        elsif ext == '.txt'
+          content = "<pre>#{content}</pre>"
+        end
+        data = src[:metadata]
+        data['content'] = content
+        data['sitetitle'] = @site_title
+        data['siteblurb'] = @site_blurb
+        data['sitefooter'] = @site_footer
+        data['sitemenu'] = @menu
+        content = @layout.render(data)
+        file.write content
+      end
+    else
+      FileUtils.copy(path, out_filename)
+    end
+  end
+  puts '-------------------------------------------'
+  puts 'Generated.'
 end
-puts '---------------------------------------'
-puts 'Generated.'
 
 # If requested, serve the static site just created.
-serve = (ARGV[0] && (ARGV[0] == '--serve'))
+serve = (ARGV[0] && (ARGV[0] == 'serve'))
 if serve
-  puts '---------------------------------------'
-  puts 'Creating new site and content folders'
-  puts
+  puts '-------------------------------------------'
   puts 'Starting static server on http://localhost:1337 ... Ctrl+C stops'
   puts
   root = File.join(File.dirname(__FILE__), 'www')

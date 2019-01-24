@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.1.0] - 2019-01-24
+
+### Changed
+
+- Better auto-generated sample site
+- Changed command line arguments
+
 ## [1.0.0] - 2018-09-04
 
 ### Changed

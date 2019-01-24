@@ -1,6 +1,6 @@
 # Ruthless.io
 
-**Version 1.0.1**
+**Version 1.1.0**
 
 Ruthlessly simple static site generator, written in Ruby.
 
@@ -57,9 +57,9 @@ As *Ruthless* is a single file, the simplest option is to place a copy in the fo
 
 | Command | Action |
 |-------- |------- |
-|```ruby ruthless.rb --site```|Generate a simple site in a new subfolder (always named ```site```).|
-|```ruby ruthless.rb```|Render a static version of the site found in the ```site``` subfolder.|
-|```ruby ruthless.rb --serve```|Serve the site in the ```site``` subfolder (dev only).|
+|```ruby ruthless.rb new```|Generate a simple site in a new subfolder (always named ```site```).|
+|```ruby ruthless.rb build```|Render a static version of the site found in the ```site``` subfolder.|
+|```ruby ruthless.rb serve```|Build, then serve the site in the ```site``` subfolder (dev only).|
 
 The generated static site will be in a ```www``` folder alongside the ```site``` one. Any existing ```www``` folder will be replaced (permissions permitting).
 
@@ -136,7 +136,8 @@ The site is rendered using your content, combined with the ```layout.liquid``` t
 
 #### Content
 
-By using content front matter (as flat YAML metadata) *you can provide any key/value information you like and it will make it's way to the template*, with the exception of the ones above which are built in and hence reserved.
+By using content front matter (as flat YAML metadata) *you can provide any key/value information you like and it will make it's way to the template*.
+See the use of the 'dated' YAML option in a *new* site's layout and how the value is provided on the sample news item content only.
 
 For example:
 

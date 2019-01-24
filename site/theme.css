@@ -6,7 +6,7 @@ a:hover { color: #359fe0; }
 #main { line-height: 140%; }
 #footer { margin-top: 5rem; font-size: 0.9rem; }
 #site-menu { margin-top: 0.5rem; }
-#site-menu a { margin-right: 0.25rem; white-space: nowrap; }
+#site-menu a { margin-right: 1rem; white-space: nowrap; }
 #main img { max-width: 10rem; max-height: 10rem; float: right; margin: 1rem 0 1rem 2rem; background: #fff; padding: 0.4rem; box-shadow: 0 0 8px #00000033; }
 #header strong { font-size: 1.3rem; }
 h1,h2,h3,h4,h5,h6 { line-height: 110%; }

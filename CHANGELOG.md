@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.1.1] - 2019-01-24
+
+### Added
+
+- Various extra metatags in sample layout
+- Support for meta keywords in the site definition
+- Support for page-specific meta keywords
+- Support for page-specific meta author
+
 ## [1.1.0] - 2019-01-24
 
 ### Changed

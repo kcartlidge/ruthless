@@ -1,10 +1,8 @@
 # Ruthless.io
 
-**Version 1.1.0**
-
 Ruthlessly simple static site generator, written in Ruby.
 
-* See the [changelog](https://github.com/kcartlidge/ruthless/blob/master/CHANGELOG.md) for a version history.
+See the [change log file](CHANGELOG.md) for current and previous version details.
 
 ## Benefits
 
@@ -66,7 +64,7 @@ The generated static site will be in a ```www``` folder alongside the ```site```
 ## Site folder structure
 
 Content is created as [Markdown](https://daringfireball.net/projects/markdown/) files in a ```content``` subfolder. Your site's final built structure will mirror the ```content``` folder structure you employ.
-Running ```ruby ruthless.rb --site``` will create this structure for you, along with some extra files. The result is shown below:
+Running ```ruby ruthless.rb new``` will create this structure for you, along with some extra files. The result is shown below:
 
 ```
 ruthless.rb
@@ -103,6 +101,7 @@ The ```site``` folder should have a ```ruthless.ini``` file with the following o
 title = Ruthless
 blurb = Ruthlessly simple static site generator
 footer = Created by <a href='https://ruthless.io' target='_blank'>ruthless.io</a> and <a href='https://www.ruby-lang.org' target='_blank'>Ruby</a>.
+keywords = ruthless,static,site,generator
 
 [OPTIONS]
 extentions = false
@@ -119,25 +118,17 @@ The site is rendered using your content, combined with the ```layout.liquid``` t
 * The ```ruthless.ini``` file is read in
 * The ```theme.css``` file is copied over
 * Your ```*.md``` files and their locations are read in
-* They are passed though *Red Carpet* for fast conversion to HTML
-* They are then passed through *Liquid* for fast templating
+* They are split into YAML front matter and Markdown content
+* The Markdown is passed though *Red Carpet* for fast conversion to HTML
+* The new HTML and the YAML are then passed through *Liquid* for fast templating
 * The results are written to matching folders in the output
 * Files named ```*.txt``` are also passed through *Liquid*, but are not treated as Markdown. They will be written inside ```<pre>``` tags.
 * Other file types are copied across unchanged.
 
-### Allowed properties in the template
+### Supported variables in the template
 
-#### Site
-
-* ```sitetitle``` - from the ```ruthless.ini``` file
-* ```siteblurb``` - from the ```ruthless.ini``` file
-* ```sitefooter``` - from the ```ruthless.ini``` file
-* ```content``` - the final output from the flow above
-
-#### Content
-
-By using content front matter (as flat YAML metadata) *you can provide any key/value information you like and it will make it's way to the template*.
-See the use of the 'dated' YAML option in a *new* site's layout and how the value is provided on the sample news item content only.
+Some site-level variables are always available.
+In addition, by using content front matter (simple YAML metadata) *you can provide any key/value information you like and it will make it's way to the template*. See the sample news item content in a newly-created site for a demo.
 
 For example:
 
@@ -145,10 +136,27 @@ For example:
 ---
 title: Welcome to Ruthless
 dated: 2018-08-27
+newsflash: This is a custom variable I can use in my layouts!
 ---
 
-For more information, see [the web site](https://ruthless.io).
+Lorem ipsum dolor sit amet adipiscing.
 ```
+
+#### In the site's ini file
+
+* ```sitetitle``` - the text to show in the title
+* ```siteblurb``` - the text to show below the title
+* ```sitefooter``` - the text to show in the footer area
+* ```sitekeywords``` - the HTML metatag keywords
+
+#### In the content item YAML front matter
+
+* ```title``` - the human readable title to show on a piece of content
+* ```dated``` - the (text) date value to show on a piece of content
+* ```author``` - the value to use for the author HTML metatag
+* ```keywords``` - extra keywords to join the ```sitekeywords```
+
+* ```content``` - the location to inject rendered content
 
 ---
 

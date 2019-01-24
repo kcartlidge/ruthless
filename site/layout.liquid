@@ -1,7 +1,16 @@
-<html>
+<!DOCTYPE html>
+<html lang='en'>
   <head>
+    <meta charset='utf-8'>
+    <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+    <meta name='viewport' content='width=device-width, initial-scale=1'>
+    <meta name=generator content='Ruthless (Ruby)'>
+    <meta name='keywords' content='{{ sitekeywords }},{{ keywords }}'>
+    <meta name='description' content='{{ sitetitle }}'>
+    <meta name='robots' content='follow,index,noarchive,noodp'>
+    <meta name='google' content='nositelinkssearchbox'>
+    <meta name='author' content='{{ author }}'>
     <link href='/theme.css' rel='stylesheet' type='text/css' />
-    <meta charset='utf-8' />
     <title>{{ title}} -- {{ sitetitle }}</title>
   </head>
   <body>
@@ -9,9 +18,7 @@
       <strong>{{ sitetitle }}</strong><br />
       {{ siteblurb }}
       <div id='site-menu'>
-        {% for option in sitemenu %}
-          {{ option }}
-        {% endfor %}
+        {% for option in sitemenu %}{{ option }}{% endfor %}
       </div>
     </div>
     <div id='main'>

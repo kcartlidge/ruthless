@@ -1,6 +1,6 @@
 #!/usr/bin/ruby
 
-version = "1.1.0"
+version = "1.1.1"
 puts '[ensuring dependencies]'
 
 require 'fileutils'
@@ -127,6 +127,7 @@ if new_site
 title  = Sample Ruthless Site
 blurb  = Welcome to my Ruthless-generated site
 footer = Created by <a href='https://github.com/kcartlidge/ruthless' target='_blank'>Ruthless.io</a> and <a href='https://www.ruby-lang.org' target='_blank'>Ruby</a>.
+keywords = ruthless,static,site,generator
 
 [OPTIONS]
 extentions = false
@@ -138,12 +139,21 @@ About = /about")
   new_file('home page', File.join(@content_folder, 'index.md'), "---\ntitle: Welcome to Ruthless\n---\n\nFor more information, see [the GitHub repository](https://github.com/kcartlidge/ruthless).\n\n* [Latest News](/news)\n* [About Ruthless](/about)")
   new_file('about page', File.join(@content_folder, 'about.md'), "---\ntitle: About Ruthless\n---\n\nLorem ipsum dolor sit amet adipiscing.")
   new_file('sample news page', File.join(@sample_news_folder, 'index.md'), "---\ntitle: Latest News\n---\n\nLorem ipsum dolor sit amet adipiscing.\n\n* [Sample News Item 1](sample-news-item-1)\n* [Sample News Item 2](sample-news-item-2)")
-  new_file('sample news item 1 page', File.join(@sample_news_folder, 'sample-news-item-1.md'), "---\ntitle: Sample News Item #1\ndated: August 27, 2018\n---\n\nLorem ipsum dolor sit amet adipiscing.\n\n* [Back to the Latest News](/news)")
-  new_file('sample news item 2 page', File.join(@sample_news_folder, 'sample-news-item-2.md'), "---\ntitle: Sample News Item #2\ndated: January 23, 2019\n---\n\nLorem ipsum dolor sit amet adipiscing.\n\n* [Back to the Latest News](/news)")
-  new_file('template', @layout_file, "<html>
+  new_file('sample news item 1 page', File.join(@sample_news_folder, 'sample-news-item-1.md'), "---\ntitle: Sample News Item #1\ndated: August 27, 2018\nauthor: Ruthless.io\nkeywords: news\n---\n\nLorem ipsum dolor sit amet adipiscing.\n\n* [Back to the Latest News](/news)")
+  new_file('sample news item 2 page', File.join(@sample_news_folder, 'sample-news-item-2.md'), "---\ntitle: Sample News Item #2\ndated: January 23, 2019\nauthor: Ruthless.io\nkeywords: news\n---\n\nLorem ipsum dolor sit amet adipiscing.\n\n* [Back to the Latest News](/news)")
+  new_file('template', @layout_file, "<!DOCTYPE html>
+<html lang='en'>
   <head>
+    <meta charset='utf-8'>
+    <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+    <meta name='viewport' content='width=device-width, initial-scale=1'>
+    <meta name=generator content='Ruthless (Ruby)'>
+    <meta name='keywords' content='{{ sitekeywords }},{{ keywords }}'>
+    <meta name='description' content='{{ sitetitle }}'>
+    <meta name='robots' content='follow,index,noarchive,noodp'>
+    <meta name='google' content='nositelinkssearchbox'>
+    <meta name='author' content='{{ author }}'>
     <link href='/theme.css' rel='stylesheet' type='text/css' />
-    <meta charset='utf-8' />
     <title>{{ title}} -- {{ sitetitle }}</title>
   </head>
   <body>
@@ -151,9 +161,7 @@ About = /about")
       <strong>{{ sitetitle }}</strong><br />
       {{ siteblurb }}
       <div id='site-menu'>
-        {% for option in sitemenu %}
-          {{ option }}
-        {% endfor %}
+        {% for option in sitemenu %}{{ option }}{% endfor %}
       </div>
     </div>
     <div id='main'>
@@ -178,7 +186,7 @@ a:hover { color: #359fe0; }
 #main { line-height: 140%; }
 #footer { margin-top: 5rem; font-size: 0.9rem; }
 #site-menu { margin-top: 0.5rem; }
-#site-menu a { margin-right: 0.25rem; white-space: nowrap; }
+#site-menu a { margin-right: 1rem; white-space: nowrap; }
 #main img { max-width: 10rem; max-height: 10rem; float: right; margin: 1rem 0 1rem 2rem; background: #fff; padding: 0.4rem; box-shadow: 0 0 8px #00000033; }
 #header strong { font-size: 1.3rem; }
 h1,h2,h3,h4,h5,h6 { line-height: 110%; }
@@ -210,6 +218,7 @@ if build_site
   @site_title = ini['SITE']['title']
   @site_blurb = ini['SITE']['blurb']
   @site_footer = ini['SITE']['footer']
+  @site_keywords = ini['SITE']['keywords']
   @extentions = ini['OPTIONS']['extentions']
 
   # Populate the (optional) menu.
@@ -292,6 +301,7 @@ if build_site
         data['sitetitle'] = @site_title
         data['siteblurb'] = @site_blurb
         data['sitefooter'] = @site_footer
+        data['sitekeywords'] = @site_keywords
         data['sitemenu'] = @menu
         content = @layout.render(data)
         file.write content

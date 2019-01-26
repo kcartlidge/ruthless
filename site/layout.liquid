@@ -14,21 +14,23 @@
     <title>{{ title}} -- {{ sitetitle }}</title>
   </head>
   <body>
-    <div id='header'>
-      <strong>{{ sitetitle }}</strong><br />
-      {{ siteblurb }}
-      <div id='site-menu'>
+    <header>
+      <h1>{{ sitetitle }}</h1>
+      <aside>{{ siteblurb }}</aside>
+      <nav>
         {% for option in sitemenu %}{{ option }}{% endfor %}
-      </div>
-    </div>
-    <div id='main'>
+      </nav>
+    </header>
+    <section>
       <h1>{{ title}}</h1>
-      {% if dated %}<div class='dated'>{{ dated }}</div>{% endif %}
-      {{ content }}
-    </div>
-    <div id='footer'>
-      <small>{{ sitefooter }}</small>
-    </div>
+      <article>
+        {% if dated %}<div class='dated'>{{ dated }}</div>{% endif %}
+        {{ content }}
+      </article>
+    </section>
+    <footer>
+      {{ sitefooter }}
+    </footer>
     <script>
       var ls = document.links;
       for (var i = 0, ln = ls.length; i < ln; i++) if (ls[i].hostname != window.location.hostname) ls[i].target = '_blank';

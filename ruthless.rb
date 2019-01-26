@@ -157,38 +157,41 @@ About = /about")
     <title>{{ title}} -- {{ sitetitle }}</title>
   </head>
   <body>
-    <div id='header'>
-      <strong>{{ sitetitle }}</strong><br />
-      {{ siteblurb }}
-      <div id='site-menu'>
+    <header>
+      <h1>{{ sitetitle }}</h1>
+      <aside>{{ siteblurb }}</aside>
+      <nav>
         {% for option in sitemenu %}{{ option }}{% endfor %}
-      </div>
-    </div>
-    <div id='main'>
+      </nav>
+    </header>
+    <section>
       <h1>{{ title}}</h1>
-      {% if dated %}<div class='dated'>{{ dated }}</div>{% endif %}
-      {{ content }}
-    </div>
-    <div id='footer'>
-      <small>{{ sitefooter }}</small>
-    </div>
+      <article>
+        {% if dated %}<div class='dated'>{{ dated }}</div>{% endif %}
+        {{ content }}
+      </article>
+    </section>
+    <footer>
+      {{ sitefooter }}
+    </footer>
     <script>
       var ls = document.links;
       for (var i = 0, ln = ls.length; i < ln; i++) if (ls[i].hostname != window.location.hostname) ls[i].target = '_blank';
     </script>
   </body>
 </html>")
-  new_file('theme', @theme_file, "body { font-family: 'Noto Sans', Verdana, 'Helvetica Neue', Helvetica, sans-serif; font-size: 13pt; background: #f8f8f8; color: #444; margin: 0; padding: 0.5rem 2rem; }
+  new_file('theme', @theme_file, "body { font-family: 'Noto Sans', Verdana, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; font-size: 13pt; background: #f8f8f8; color: #444; margin: 0; padding: 0.5rem 2rem; }
 a { color: #06d; text-decoration: none; border-bottom: solid 1px #8af; }
 a:hover { color: #359fe0; }
-#header, #main, #footer { max-width: 50rem; margin: 0 auto; }
-#header { margin-bottom: 4rem; }
-#main { line-height: 140%; }
-#footer { margin-top: 5rem; font-size: 0.9rem; }
-#site-menu { margin-top: 0.5rem; }
-#site-menu a { margin-right: 1rem; white-space: nowrap; }
-#main img { max-width: 10rem; max-height: 10rem; float: right; margin: 1rem 0 1rem 2rem; background: #fff; padding: 0.4rem; box-shadow: 0 0 8px #00000033; }
-#header strong { font-size: 1.3rem; }
+header, section, footer { max-width: 50rem; margin: 0 auto; }
+header { margin-bottom: 4rem; }
+section { line-height: 140%; }
+footer { margin-top: 5rem; font-size: 0.9rem; }
+header nav { margin-top: 0.75rem; }
+header nav a { margin-right: 1rem; white-space: nowrap; }
+section img { max-width: 10rem; max-height: 10rem; float: right; margin: 1rem 0 1rem 2rem; background: #fff; padding: 0.4rem; box-shadow: 0 0 8px #00000033; }
+header h1 { font-size: 1.2rem; margin: 0.25rem 0; }
+header aside { color: #666; }
 h1,h2,h3,h4,h5,h6 { line-height: 110%; }
 table { margin: 2rem 0; }
 th, td { padding: 0.1rem 1rem 0.1rem 0; border-bottom: solid 1px #ccc; }
@@ -196,7 +199,7 @@ li { margin: 0.25em 0; }
 pre { overflow: scroll; }
 pre, code { background: #fff; color: #222; padding: 0.2rem 0.3rem; border: solid 2px #aaa; }
 pre code { border: 0; padding: 0; }
-.dated { font-size: 0.8rem; margin-top: -1.5rem; color: #666; text-transform: uppercase; }")
+.dated { font-size: 0.8rem; margin-top: -1.25rem; color: #666; text-transform: uppercase; }")
   done('New site created')
 end
 
@@ -303,7 +306,7 @@ if build_site
         data['sitefooter'] = @site_footer
         data['sitekeywords'] = @site_keywords
         data['sitemenu'] = @menu
-        content = @layout.render(data)
+        content = @layout.render(data).delete("\r")
         file.write content
       end
     else

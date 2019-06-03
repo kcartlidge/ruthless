@@ -192,13 +192,15 @@ header nav a { margin-right: 1rem; white-space: nowrap; }
 section img { max-width: 10rem; max-height: 10rem; float: right; margin: 1rem 0 1rem 2rem; background: #fff; padding: 0.4rem; box-shadow: 0 0 8px #00000033; }
 header h1 { font-size: 1.2rem; margin: 0.25rem 0; }
 header aside { color: #666; }
+h1 { font-size: 1.75em; color: #000; }
 h1,h2,h3,h4,h5,h6 { line-height: 110%; }
 table { margin: 2rem 0; }
 th, td { padding: 0.1rem 1rem 0.1rem 0; border-bottom: solid 1px #ccc; }
 li { margin: 0.25em 0; }
-pre { overflow: scroll; }
-pre, code { background: #fff; color: #222; padding: 0.2rem 0.3rem; border: solid 2px #aaa; }
-pre code { border: 0; padding: 0; }
+pre { background: #fff; overflow: scroll; border: solid 1px #999; }
+code { background: #ddd; }
+pre, code { color: #222; padding: 0.2rem 0.3rem; }
+pre code { background: #fff; border: 0; padding: 0; }
 .dated { font-size: 0.8rem; margin-top: -1.25rem; color: #666; text-transform: uppercase; }")
   done('New site created')
 end

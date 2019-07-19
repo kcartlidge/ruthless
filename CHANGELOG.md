@@ -2,9 +2,16 @@
 
 All notable changes to this project will be documented in this file.
 
+## [Unreleased]
+
+### 2019-07-19
+
+- Updated README etc for Markdown linting
+- Added VS Code extentions file
+
 ## [1.1.1] - 2019-01-24
 
-### Added
+Added:
 
 - Various extra metatags in sample layout
 - Support for meta keywords in the site definition
@@ -13,75 +20,75 @@ All notable changes to this project will be documented in this file.
 
 ## [1.1.0] - 2019-01-24
 
-### Changed
+Changed:
 
 - Better auto-generated sample site
 - Changed command line arguments
 
 ## [1.0.0] - 2018-09-04
 
-### Changed
+Changed:
 
 - More efficient processing of non-templated files
 - Image copies don't break on Windows
 
 ## [0.7.1] - 2018-08-31
 
-### Added
+Added:
 
 - Support main menu
 
 ## [0.7.0] - 2018-08-30
 
-### Added
+Added:
 
 - Content front matter (metadata) support
 
 ## [0.6.0] - 2018-08-29
 
-### Added
+Added:
 
 - Bundler for automatic dependency installation
 
 ## [0.5.0] - 2018-08-28
 
-### Added
+Added:
 
 - Support non-Markdown content files
 - Text files (.txt) are also templated
 
 ## [0.4.1] - 2018-08-28
 
-### Changed
+Changed:
 
 - Use a command line option to choose whether or not to serve the site
 
 ## [0.4.0] - 2018-08-28
 
-### Added
+Added:
 
 - Create and use a ```ruthless.ini``` config file
 
 ## [0.3.0] - 2018-08-28
 
-### Added
+Added:
 
 - Serve static site with *Webrick*
 
 ## [0.2.0] - 2018-08-27
 
-### Added
+Added:
 
 - More details in the readme
 
-### Changed
+Changed:
 
 - Switched to *Red Carpet* for faster, more complete Markdown support
 - Switched to *Liquid* templates for faster, more complete templating
 
 ## [0.1.0] - 2018-08-27
 
-### Added
+Added:
 
 - Config files and README
 - Sample site creation

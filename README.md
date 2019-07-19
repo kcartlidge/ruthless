@@ -149,7 +149,7 @@ Other items can be placed in the YAML area and will pass through intact.
 
 These will need to available on your system first:
 
-- [Ruby 2+](https://www.ruby-lang.org) (v1.9+ should also work)
+- [Ruby 2.4.5+](https://www.ruby-lang.org)
 - [Bundler](https://bundler.io/)
 
 #### Ruby 2+

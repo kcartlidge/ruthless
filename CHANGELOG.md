@@ -2,10 +2,9 @@
 
 All notable changes to this project will be documented in this file.
 
-## [Unreleased]
+## [1.1.2] - 2019-07-20
 
-### 2019-07-19
-
+- Added conditional nested templates (*includes*)
 - Updated README etc for Markdown linting
 - Added VS Code extentions file
 

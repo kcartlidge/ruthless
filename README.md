@@ -17,6 +17,8 @@ See the [change log file](CHANGELOG.md) for current and previous version details
 
 - It's a **single file** - no installation needed, just drop a copy of the ```ruthless.rb``` script straight into any folder to start using it.
 - You can **create a complete sample site**, including **layout** and **theme**, simply by running the script.
+- **Child templates** are supported for shared headers, snippets etc.
+- Your child templates can be **conditionally included** by in-template logic.
 - Optionally generate pages that **don't need .html extentions even where the server doesn't support that option**.
 - Other than Ruby and Bundler, it **bootstraps it's own dependencies** for ease of use.
 - Write your content using **Markdown** or **plain text** files and they will use your **template and theme**. Other files are simply copied in unchanged.
@@ -50,6 +52,9 @@ site/
   ruthless.ini
   layout.liquid
   theme.css
+  includes/
+    _dated.liquid
+    _page.liquid
   content/
     index.md
     news/
@@ -89,24 +94,10 @@ Home = /
 Latest = /news
 ```
 
-### Basic flow
-
-The site is rendered using your content, combined with the `layout.liquid` template and the `theme.css` stylesheet.
-
-- The `ruthless.ini` file is read in
-- The `theme.css` file is copied over
-- Your `*.md` files and their locations are read in
-- They are split into YAML front matter and Markdown content
-- The Markdown is passed though *Red Carpet* for fast conversion to HTML
-- The new HTML and the YAML are then passed through *Liquid* for fast templating
-- The results are written to matching folders in the output
-- Files named `*.txt` are also passed through *Liquid*, but are not treated as Markdown. They will be written inside `<pre>` tags.
-- Other file types are copied across unchanged.
-
 ### Supported variables in the template
 
 Some site-level variables are always available.
-In addition, by using content front matter (simple YAML metadata) *you can provide any key/value information you like and it will make it's way to the template*. See the sample news item content in a newly-created site for a demo.
+In addition, by using content frontmatter (simple YAML metadata) *you can provide any key/value information you like and it will make it's way to the template*. See the sample news item content in a newly-created site for a demo.
 
 For example:
 
@@ -129,17 +120,48 @@ These are the supported site-level items:
 - `sitefooter` - the text to show in the footer area
 - `sitekeywords` - the HTML metatag keywords
 
-#### Display **content** data from an entry's YAML front matter
+#### Display **content** data from an entry's YAML frontmatter
 
-These are the supported entry-level items by default:
+Any items can be placed in an entry's YAML area and they will be passed through intact for use in templates.
+
+There are no 'required' YAML items, however the default layout templates expect the following (their presence is expected only if you base your layout on the default one):
 
 - `title` - the human readable title to show on a piece of content
 - `dated` - the (text) date value to show on a piece of content
 - `author` - the value to use for the author HTML metatag
 - `keywords` - extra keywords to join the `sitekeywords`
-- `content` - the location to inject rendered content
 
-Other items can be placed in the YAML area and will pass through intact.
+In addition all the Markdown that follows an entry's YAML frontmatter/metadata is rendered as HTML where the following template tag appears:
+
+- `content` - the rendered content from an entry
+
+### Child templates
+
+Full Liquid support for child templates is included.
+Your templates should be in the `site/includes` folder, prefixed with an underscore and with the `.liquid` file extention (eg `site/includes/_dated.liquid`).
+
+Refer to them in your other templates by the name only:
+
+``` liquid
+{% if isdated %}{% include 'dated' %}{% endif %}
+```
+
+If you're still unsure then create a new site (see above) and the default template will include nested conditional templates.
+
+### Basic flow
+
+The site is rendered using your content, combined with the `layout.liquid` template and the `theme.css` stylesheet.
+
+- The `ruthless.ini` file is read in
+- The `theme.css` file is copied over
+- Your `*.md` files and their locations are read in
+- They are split into YAML frontmatter and Markdown content
+- The Markdown is passed though *Red Carpet* for fast conversion to HTML
+- The new HTML and the YAML are then passed through *Liquid* for fast templating
+- You can see [more about Liquid templating here](https://github.com/Shopify/liquid/wiki/Liquid-for-Designers)
+- The results are written to matching folders in the output
+- Files named `*.txt` are also passed through *Liquid*, but are not treated as Markdown. They will be written inside `<pre>` tags.
+- Other file types are copied across unchanged.
 
 ---
 
@@ -165,7 +187,7 @@ For this to work, Bundler must already be available:
 sudo gem install bundler
 ```
 
-### Handled automatically
+### Installed automatically
 
 Running *Ruthless* will fetch the following automatically (via Bundler) on first use:
 

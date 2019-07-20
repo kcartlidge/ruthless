@@ -35,6 +35,7 @@ puts
 @sample_news_folder = File.join(File.dirname(__FILE__), "site", "content", "news")
 @ini_file = File.join(@site_folder, "ruthless.ini")
 @layout_file = File.join(File.dirname(__FILE__), "site", "layout.liquid")
+@includes_folder = File.join(File.dirname(__FILE__), "site", "includes")
 @theme_file = File.join(File.dirname(__FILE__), "site", "theme.css")
 @html_folder = File.join(File.dirname(__FILE__), "www")
 @templatable = [".md", ".txt"].to_set
@@ -166,8 +167,7 @@ About = /about")
     <section>
       <h1>{{ title}}</h1>
       <article>
-        {% if dated %}<div class='dated'>{{ dated }}</div>{% endif %}
-        {{ content }}
+        {% include 'page' %}
       </article>
     </section>
     <footer>
@@ -179,6 +179,8 @@ About = /about")
     </script>
   </body>
 </html>")
+  new_file("child template", File.join(@includes_folder, "_dated.liquid"), "<div class='dated'>{{ dated }}</div>")
+  new_file("page template", File.join(@includes_folder, "_page.liquid"), "{% if dated %}{% include 'dated' %}{% endif %}\n{{ content }}")
   new_file("theme", @theme_file, "body { font-family: 'Noto Sans', Verdana, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; font-size: 13pt; background: #f8f8f8; color: #444; margin: 0; padding: 0.5rem 2rem; }
 a { color: #06d; text-decoration: none; border-bottom: solid 1px #8af; }
 a:hover { color: #359fe0; }
@@ -239,6 +241,7 @@ if build_site
   file_must_exist(@layout_file, "layout template")
   file_must_exist(@theme_file, "theme styles")
   Liquid::Template.error_mode = :strict
+  Liquid::Template.file_system = Liquid::LocalFileSystem.new(@includes_folder)
   @layout = Liquid::Template.parse(File.read(@layout_file))
 
   # Ensure we have a fresh, empty, output folder.

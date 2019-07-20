@@ -1,7 +1,7 @@
 #!/usr/bin/ruby
 
-version = "1.1.1"
-puts "[ensuring dependencies]"
+version = "2.0.0"
+puts "(ensuring dependencies - slower first time)"
 
 require "fileutils"
 require "find"
@@ -26,18 +26,21 @@ puts "  build   Generate the site output"
 puts "  serve   Build and serve the site"
 puts
 puts 'The site should be in a "site" subfolder'
-puts 'Builds are put in a sibling "www" folder'
+puts 'Builds are written to a sibling "www" folder'
 puts
 
-# Define some of the folder/file options.
+# Define folder/file locations.
 @site_folder = File.join(File.dirname(__FILE__), "site")
-@content_folder = File.join(File.dirname(__FILE__), "site", "content")
-@sample_news_folder = File.join(File.dirname(__FILE__), "site", "content", "news")
-@ini_file = File.join(@site_folder, "ruthless.ini")
-@layout_file = File.join(File.dirname(__FILE__), "site", "layout.liquid")
-@includes_folder = File.join(File.dirname(__FILE__), "site", "includes")
-@theme_file = File.join(File.dirname(__FILE__), "site", "theme.css")
 @html_folder = File.join(File.dirname(__FILE__), "www")
+@content_folder = File.join(@site_folder, "content")
+@layouts_folder = File.join(@site_folder, "theme")
+@includes_folder = File.join(@layouts_folder, "includes")
+@sample_news_folder = File.join(@content_folder, "news")
+@ini_file = File.join(@site_folder, "ruthless.ini")
+@layout_file = File.join(@layouts_folder, "layout.liquid")
+@theme_file = File.join(@layouts_folder, "theme.css")
+
+# Define some options.
 @templatable = [".md", ".txt"].to_set
 @menu = []
 

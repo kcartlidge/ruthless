@@ -50,11 +50,12 @@ Running `ruby ruthless.rb new` will create this structure for you, along with so
 ruthless.rb
 site/
   ruthless.ini
-  layout.liquid
-  theme.css
-  includes/
-    _dated.liquid
-    _page.liquid
+  theme/
+    layout.liquid
+    theme.css
+    includes/
+      _dated.liquid
+      _page.liquid
   content/
     index.md
     news/

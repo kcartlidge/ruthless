@@ -10,7 +10,7 @@ require "bundler/inline"
 gemfile do
   source "https://rubygems.org"
   gem "inifile"
-  gem "redcarpet"
+  gem "kramdown"
   gem "liquid"
   gem "webrick"
 end
@@ -40,18 +40,6 @@ puts
 @html_folder = File.join(File.dirname(__FILE__), "www")
 @templatable = [".md", ".txt"].to_set
 @menu = []
-
-# Set up markdown rendering defaults.
-md_opts = {
-  tables: true,
-  no_intra_emphasis: true,
-  highlight: true,
-  fenced_code_blocks: true,
-  autolink: true,
-  strikethrough: true,
-  space_after_headers: true,
-}
-@markdown = Redcarpet::Markdown.new(Redcarpet::Render::HTML, md_opts)
 
 # Display the error message then abort.
 def fatal(message)
@@ -299,7 +287,7 @@ if build_site
         src = get_metadata_and_content(path)
         content = src[:content]
         if ext == ".md"
-          content = @markdown.render(content)
+          content = Kramdown::Document.new(content).to_html
         elsif ext == ".txt"
           content = "<pre>#{content}</pre>"
         end

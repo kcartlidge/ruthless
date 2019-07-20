@@ -178,6 +178,8 @@ These will need to available on your system first:
 
 You can use the main Ruby site installation details (see link above), or try [RVM, the Ruby Version Manager](https://rvm.io). On Windows the [Ruby+Devkit 2.4.X](https://rubyinstaller.org/downloads/) helps, but be sure to do the full (larger) install when prompted.
 
+On Linux you can just do the usual `sudo apt-get install ruby`, provided your distro has version 2.4.5 or later.
+
 #### Bundler
 
 Upon running *Ruthless* it will fetch it's own dependencies via *Bundler*.
@@ -192,7 +194,7 @@ sudo gem install bundler
 Running *Ruthless* will fetch the following automatically (via Bundler) on first use:
 
 - [inifile](https://github.com/twp/inifile)
-- [RedCarpet](https://github.com/vmg/redcarpet)
+- [kramdown](https://kramdown.gettalong.org/)
 - [Liquid](https://shopify.github.io/liquid/)
 - [Webrick](https://github.com/ruby/webrick)
 

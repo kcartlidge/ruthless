@@ -90,10 +90,20 @@ keywords = ruthless,static,site,generator
 [OPTIONS]
 extentions = false
 
+[SETTINGS]
+google-analytics = # AB-123456789-0
+disqus-comments  = # account-name
+
 [MENU]
 Home = /
 Latest = /news
 ```
+
+The `SETTINGS` section can contain any key/values you like.
+The two example ones (`analytics` and `comments`) are used by the sample layout.
+
+To activate them remove the `#` (which disables them).
+Any entries you add can be accessed by a theme in the same way as these two are in `theme/layout.liquid`.
 
 ### Supported variables in the template
 

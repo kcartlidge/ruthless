@@ -194,14 +194,14 @@ About = /about")
     {% if settings.disqus-comments %}
     <script>
       var disqus_config = function () {
-        this.page.url = ' ';
+        // this.page.url = ' ';
         this.page.identifier = '{{ title }}';
       };
 
       (function () {
           var d = document, s = d.createElement('script');
 
-          s.src = '//{{ settings.disqus-comments }}.disqus.com/embed.js';
+          s.src = 'https://{{ settings.disqus-comments }}.disqus.com/embed.js';
 
           s.setAttribute('data-timestamp', +new Date());
           (d.head || d.body).appendChild(s);

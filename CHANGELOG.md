@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2.0.1] - 2019-07-22
+
+- Added support for 'settings' in site `ini` file
+- Added Disqus support to sample theme
+- Added Google Analytics support to sample theme
+
 ## [2.0.0] - 2019-07-20
 
 - Moved theme into own subfolder

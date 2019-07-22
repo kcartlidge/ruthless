@@ -1,6 +1,6 @@
 #!/usr/bin/ruby
 
-version = "2.0.0"
+version = "2.0.1"
 puts "(ensuring dependencies - slower first time)"
 
 require "fileutils"
@@ -123,6 +123,10 @@ keywords = ruthless,static,site,generator
 [OPTIONS]
 extentions = false
 
+[SETTINGS]
+google-analytics = # AB-123456789-0
+disqus-comments  = # account-name
+
 [MENU]
 Home = /
 Latest News = /news
@@ -159,15 +163,51 @@ About = /about")
       <h1>{{ title}}</h1>
       <article>
         {% include 'page' %}
+        {% if settings.disqus-comments %}
+        <div id='disqus_thread'></div>
+        {% endif %}
       </article>
     </section>
     <footer>
       {{ sitefooter }}
     </footer>
+
     <script>
       var ls = document.links;
       for (var i = 0, ln = ls.length; i < ln; i++) if (ls[i].hostname != window.location.hostname) ls[i].target = '_blank';
     </script>
+
+    {% if settings.google-analytics %}
+    <!-- Global Site Tag (gtag.js) - Google Analytics -->
+    <script async src='https://www.googletagmanager.com/gtag/js?id={{ settings.google-analytics }}'></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+
+        function gtag() {
+            dataLayer.push(arguments)
+        };
+        gtag('js', new Date());
+        gtag('config', '{{ settings.google-analytics }}');
+    </script>
+    {% endif %}
+
+    {% if settings.disqus-comments %}
+    <script>
+      var disqus_config = function () {
+        this.page.url = ' ';
+        this.page.identifier = '{{ title }}';
+      };
+
+      (function () {
+          var d = document, s = d.createElement('script');
+
+          s.src = '//{{ settings.disqus-comments }}.disqus.com/embed.js';
+
+          s.setAttribute('data-timestamp', +new Date());
+          (d.head || d.body).appendChild(s);
+      })();
+    </script>
+    {% endif %}
   </body>
 </html>")
   new_file("child template", File.join(@includes_folder, "_dated.liquid"), "<div class='dated'>{{ dated }}</div>")
@@ -217,6 +257,10 @@ if build_site
   @site_footer = ini["SITE"]["footer"]
   @site_keywords = ini["SITE"]["keywords"]
   @extentions = ini["OPTIONS"]["extentions"]
+  @settings = ini["SETTINGS"]
+  puts "---------------"
+  puts @settings
+  puts "---------------"
 
   # Populate the (optional) menu.
   ini.each_section do |section|
@@ -301,6 +345,7 @@ if build_site
         data["sitefooter"] = @site_footer
         data["sitekeywords"] = @site_keywords
         data["sitemenu"] = @menu
+        data["settings"] = @settings
         content = @layout.render(data).delete("\r")
         file.write content
       end

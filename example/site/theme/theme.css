@@ -1,7 +1,7 @@
 body { font-family: 'Noto Sans', Verdana, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; font-size: 13pt; background: #f8f8f8; color: #444; margin: 0; padding: 0.5rem 2rem; }
-a { color: #06d; text-decoration: none; border-bottom: solid 1px #8af; }
-a:hover { color: #359fe0; }
-header, section, footer { max-width: 50rem; margin: 0 auto; }
+                    a { color: #06d; text-decoration: none; border-bottom: solid 1px #8af; }
+                    a:hover { color: #359fe0; }
+                    header, section, footer { max-width: 50rem; margin: 0 auto; }
 header { margin-bottom: 4rem; }
 section { line-height: 140%; }
 footer { margin-top: 5rem; font-size: 0.9rem; }

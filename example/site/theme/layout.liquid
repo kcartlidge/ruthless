@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+    <html lang='en'>
+    <head>
+    <meta charset='utf-8'>
+    <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+    <meta name='viewport' content='width=device-width, initial-scale=1'>
+    <meta name=generator content='Ruthless (Ruby)'>
+    <meta name='keywords' content='{{ sitekeywords }},{{ keywords }}'>
+    <meta name='description' content='{{ sitetitle }}'>
+    <meta name='robots' content='follow,index,noarchive,noodp'>
+    <meta name='google' content='nositelinkssearchbox'>
+    <meta name='author' content='{{ author }}'>
+    <link href='/theme.css' rel='stylesheet' type='text/css' />
+    <title>{{ title}} -- {{ sitetitle }}</title>
+    </head>
+    <body>
+    <header>
+    <h1>{{ sitetitle }}</h1>
+    <aside>{{ siteblurb }}</aside>
+    <nav>
+    {% for option in sitemenu %}{{ option }}{% endfor %}
+    </nav>
+    </header>
+    <section>
+    <h1>{{ title}}</h1>
+    <article>
+    {% include 'page' %}
+    {% if settings.disqus-comments %}
+      <div id='disqus_thread'></div>
+      {% endif %}
+      </article>
+      </section>
+      <footer>
+      {{ sitefooter }}
+      </footer>
+
+      <script>
+      var ls = document.links;
+      for (var i = 0, ln = ls.length; i < ln; i++) if (ls[i].hostname != window.location.hostname) ls[i].target = '_blank';
+        </script>
+
+        {% if settings.google-analytics %}
+          <!-- Global Site Tag (gtag.js) - Google Analytics -->
+          <script async src='https://www.googletagmanager.com/gtag/js?id={{ settings.google-analytics }}'></script>
+          <script>
+          window.dataLayer = window.dataLayer || [];
+
+          function gtag() {
+            dataLayer.push(arguments)
+            };
+            gtag('js', new Date());
+            gtag('config', '{{ settings.google-analytics }}');
+            </script>
+            {% endif %}
+
+            {% if settings.disqus-comments %}
+              <script>
+              var disqus_config = function () {
+                // this.page.url = ' ';
+                this.page.identifier = '{{ title }}';
+                };
+
+                (function () {
+                  var d = document, s = d.createElement('script');
+
+                  s.src = 'https://{{ settings.disqus-comments }}.disqus.com/embed.js';
+
+                  s.setAttribute('data-timestamp', +new Date());
+                  (d.head || d.body).appendChild(s);
+                  })();
+                  </script>
+                  {% endif %}
+                  </body>
+                  </html>

@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2.1.0] - 2020-02-19
+
+- Require a folder name as input argument
+  - Site content relocated to within it
+  - Output folder relocated to within it
+
 ## [2.0.1] - 2019-07-22
 
 - Added support for 'settings' in site `ini` file

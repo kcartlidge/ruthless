@@ -29,56 +29,64 @@ See the [change log file](CHANGELOG.md) for current and previous version details
 
 ## Usage
 
-As *Ruthless* is a single file, the simplest option is to place a copy in the folder where you will be creating content. From there, you can do the following:
+As *Ruthless* is a single file, the simplest option is to place a copy in the folder where you will be creating content.
+
+It's small enough that it doesn't matter if you commit it with your sites, which has the advantage of making your sites totally self-contained if the repo is deployed to another server.
+
+From there, you can do the following:
 
 | Command | Action |
 |-------- |------- |
-|`ruby ruthless.rb new`|Generate a simple site in a new subfolder (always named `site`).|
-|`ruby ruthless.rb build`|Render a static version of the site found in the `site` subfolder.|
-|`ruby ruthless.rb serve`|Build, then serve the site in the `site` subfolder (dev only).|
+|`ruby ruthless.rb new <folder>`|Generate a simple site in `<folder>/site` with sample content, theme, and layout.|
+|`ruby ruthless.rb build <folder>`|Render a static version of the site found in `<folder>/site`.|
+|`ruby ruthless.rb serve <folder>`|Build, then serve the site in `<folder>/site` (dev only).|
 
-The generated static site will be in a `www` folder alongside the `site` one. Any existing `www` folder will be replaced (permissions permitting).
+The generated static site will be in a `www` folder alongside the `site` one (so `<folder>/www`). Any existing `www` folder will be replaced (permissions permitting).
 
 ---
 
 ## Creating a site
 
-Content is created as [Markdown](https://daringfireball.net/projects/markdown/) files in a `content` subfolder. Your site's final built structure will mirror the `content` folder structure you employ.
-Running `ruby ruthless.rb new` will create this structure for you, along with some extra files. The result is shown below:
+Content is created as [Markdown](https://daringfireball.net/projects/markdown/) files in a `content` subfolder. Your built site's navigational structure will mirror the `content` folder structure you employ.
+
+Running `ruby ruthless.rb new <folder>` will create this structure for you, along with some extra files. The result (assuming `<folder>` is `example-site`) is shown below.
 
 ``` text
 ruthless.rb
-site/
-  ruthless.ini
-  theme/
-    layout.liquid
-    theme.css
-    includes/
-      _dated.liquid
-      _page.liquid
-  content/
-    index.md
-    news/
-      site-launch.md
-      about-the-site.md
-    blog/
-      how-i-wrote-this-site.md
+example-site
+  site/
+    ruthless.ini
+    theme/
+      layout.liquid
+      theme.css
+      includes/
+        _dated.liquid
+        _page.liquid
+    content/
+      index.md
+      news/
+        site-launch.md
+        about-the-site.md
+      blog/
+        how-i-wrote-this-site.md
+  www/
 ```
 
 You can add more content like so:
 
 ``` text
-site/
-  content/
-    news/
-      latest-updates.md
-    blog/
-      a-site-is-born.md
+example-site
+  site/
+    content/
+      news/
+        latest-updates.md
+      blog/
+        a-site-is-born.md
 ```
 
 ### Configuration
 
-The `site` folder should have a `ruthless.ini` file with the following options (if you create a new site then a sample one will be provided for you).
+The `<folder>/site` site folder should contain a `ruthless.ini` file with the following options (if you create a new site then a sample one will be provided for you).
 
 ``` ini
 [SITE]
@@ -100,15 +108,15 @@ Latest = /news
 ```
 
 The `SETTINGS` section can contain any key/values you like.
-The two example ones (`analytics` and `comments`) are used by the sample layout.
 
-To activate them remove the `#` (which disables them).
-Any entries you add can be accessed by a theme in the same way as these two are in `theme/layout.liquid`.
+The two example ones (`analytics` and `comments`) are used by the sample layout. To activate the values remove the `#` (which is a comment marker).
+Any entries you add can be accessed by your theme in the same way as these two are in `theme/layout.liquid`.
 
 ### Supported variables in the template
 
-Some site-level variables are always available.
-In addition, by using content frontmatter (simple YAML metadata) *you can provide any key/value information you like and it will make it's way to the template*. See the sample news item content in a newly-created site for a demo.
+#### Page level YAML frontmatter variables
+
+By using content frontmatter (simple YAML metadata) *you can provide any key/value information you like and it will also make it's way to the template*. See the sample news item content in a newly-created site for a demo.
 
 For example:
 
@@ -116,24 +124,29 @@ For example:
 ---
 title: Welcome to Ruthless
 dated: 2018-08-27
-newsflash: This is a custom variable I can use in my layouts!
+newsflash: This is a custom variable I can use in my content!
 ---
 
 Lorem ipsum dolor sit amet adipiscing.
 ```
 
-#### Display **site** data from the site ini file
+#### Default site level data from the `ini` file
 
-These are the supported site-level items:
+*Some site-level variables are always available.*
 
 - `sitetitle` - the text to show in the title
 - `siteblurb` - the text to show below the title
 - `sitefooter` - the text to show in the footer area
 - `sitekeywords` - the HTML metatag keywords
 
-#### Display **content** data from an entry's YAML frontmatter
+#### Settings data from the `ini` file
 
-Any items can be placed in an entry's YAML area and they will be passed through intact for use in templates.
+The `ini` file also has a `[SETTINGS]` section.
+Generate a new site via `ruthless` to see an example.
+
+#### Default layout YAML frontmatter expectations
+
+As mentioned, any items can be placed in an entry's YAML area and they will be passed through intact for use in templates.
 
 There are no 'required' YAML items, however the default layout templates expect the following (their presence is expected only if you base your layout on the default one):
 
@@ -145,6 +158,14 @@ There are no 'required' YAML items, however the default layout templates expect 
 In addition all the Markdown that follows an entry's YAML frontmatter/metadata is rendered as HTML where the following template tag appears:
 
 - `content` - the rendered content from an entry
+
+### Including the `ini` or `yaml` variables in your layouts
+
+- `YAML` front matter variables can be used in your actual content files by `{{ dated }}`
+- `INI` defaults are referred to by `{{ sitekeywords }}`
+- `[SETTINGS]` items are referred to by `{{ settings.google-analytics }}`.
+
+The sample site uses these in the `layout.liquid` and `_dated.liquid` files.
 
 ### Child templates
 
@@ -180,7 +201,7 @@ The site is rendered using your content, combined with the `layout.liquid` templ
 
 ### Required in advance
 
-These will need to available on your system first:
+These will need to be available on your system first:
 
 - [Ruby 2.4.5+](https://www.ruby-lang.org)
 - [Bundler](https://bundler.io/)

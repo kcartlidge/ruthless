@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2.2.0] - 2020-12-06
+
+- Allow for restart/quit on Ctrl-C when serving
+  - Breaking change as needs human intervention to end
+
 ## [2.1.0] - 2020-02-19
 
 - Require a folder name as input argument

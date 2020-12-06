@@ -33,7 +33,7 @@ if @folder
 end
 
 # Define some vars.
-@version = '2.1.0'
+@version = '2.2.0'
 @templatable = ['.md', '.txt'].to_set
 @menu = []
 
@@ -270,6 +270,7 @@ def do_build
   @settings = ini['SETTINGS']
 
   # Populate the (optional) menu.
+  @menu = []
   ini.each_section do |section|
     if section == 'MENU'
       ini[section].each do |k, v|
@@ -374,6 +375,16 @@ def do_serve
   server.start
 end
 
+# Return true/false deending upon user confirmation of quitting
+def confirm_quit
+  choice = ''
+  while(choice == '')
+    puts("(R)estart or (Q)uit?")
+    answer = STDIN.gets.strip.upcase
+    if answer == 'R' or answer == 'Q' then return answer == 'Q' end
+  end
+end
+
 # -------------------------------------------------------------
 # Do the work
 # -------------------------------------------------------------
@@ -381,6 +392,15 @@ end
 show_intro
 fatal('No folder specified') if ARGV.length < 2
 do_create if @new_site
-do_build if @build_site
-do_serve if @serve_site
+
+# Repeatedly do the work (with Ctrl-C to stop an iteration)
+ongoing = true
+while(ongoing)
+  do_build if @build_site
+  do_serve if @serve_site
+  puts
+  ongoing = ! confirm_quit
+  puts
+end
+
 done('Finis.')

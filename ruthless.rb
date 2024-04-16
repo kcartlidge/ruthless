@@ -11,6 +11,7 @@ gemfile do
   gem 'kramdown'
   gem 'liquid'
   gem 'webrick'
+  gem 'htmlbeautifier'
 end
 
 # Get the command arguments.
@@ -33,7 +34,7 @@ if @folder
 end
 
 # Define some vars.
-@version = '2.2.0'
+@version = '2.2.1'
 @templatable = ['.md', '.txt'].to_set
 @menu = []
 
@@ -355,6 +356,9 @@ def do_build
         data['sitemenu'] = @menu
         data['settings'] = @settings
         content = @layout.render(data).delete("\r")
+
+        content = HtmlBeautifier.beautify(content)
+
         file.write content
       end
     else

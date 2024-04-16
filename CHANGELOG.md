@@ -2,96 +2,80 @@
 
 All notable changes to this project will be documented in this file.
 
-## [2.2.0] - 2020-12-06
+- [2.2.1] - 2024-04-16
+  - Format the rendered HTML using HTML Beautifier
 
-- Allow for restart/quit on Ctrl-C when serving
-  - Breaking change as needs human intervention to end
+- [2.2.0] - 2020-12-06
+  - Allow for restart/quit on Ctrl-C when serving
+    - Breaking change as needs human intervention to end
 
-## [2.1.0] - 2020-02-19
+- [2.1.0] - 2020-02-19
+  - Require a folder name as input argument
+    - Site content relocated to within it
+    - Output folder relocated to within it
 
-- Require a folder name as input argument
-  - Site content relocated to within it
-  - Output folder relocated to within it
+- [2.0.1] - 2019-07-22
+  - Added support for `[SETTINGS]` in site `ini` file
+  - Added Disqus support to sample theme
+  - Added Google Analytics support to sample theme
 
-## [2.0.1] - 2019-07-22
+- [2.0.0] - 2019-07-20
+  - Moved theme into own subfolder
+  - Switched to *kramdown* to avoid redcarpet native build
 
-- Added support for 'settings' in site `ini` file
-- Added Disqus support to sample theme
-- Added Google Analytics support to sample theme
+- [1.1.2] - 2019-07-20
+  - Added conditional nested templates (*includes*)
+  - Updated README etc for Markdown linting
+  - Added VS Code extentions file
 
-## [2.0.0] - 2019-07-20
+- [1.1.1] - 2019-01-24
+  - Various extra metatags in sample layout
+  - Support for meta keywords in the site definition
+  - Support for page-specific meta keywords
+  - Support for page-specific meta author
 
-- Moved theme into own subfolder
-- Switched to *kramdown* to avoid redcarpet native build
+- [1.1.0] - 2019-01-24
+  - Better auto-generated sample site
+  - Changed command line arguments
 
-## [1.1.2] - 2019-07-20
+- [1.0.0] - 2018-09-04
+  - More efficient processing of non-templated files
+  - Image copies don't break on Windows
 
-- Added conditional nested templates (*includes*)
-- Updated README etc for Markdown linting
-- Added VS Code extentions file
+- [0.7.1] - 2018-08-31
+  - Support main menu
 
-## [1.1.1] - 2019-01-24
+- [0.7.0] - 2018-08-30
+  - Content front matter (metadata) support
 
-- Various extra metatags in sample layout
-- Support for meta keywords in the site definition
-- Support for page-specific meta keywords
-- Support for page-specific meta author
+- [0.6.0] - 2018-08-29
+  - Bundler for automatic dependency installation
 
-## [1.1.0] - 2019-01-24
+- [0.5.0] - 2018-08-28
+  - Support non-Markdown content files
+  - Text files (.txt) are also templated
 
-- Better auto-generated sample site
-- Changed command line arguments
+- [0.4.1] - 2018-08-28
+  - Use a command line option to choose whether or not to serve the site
 
-## [1.0.0] - 2018-09-04
+- [0.4.0] - 2018-08-28
+  - Create and use a `ruthless.ini` config file
 
-- More efficient processing of non-templated files
-- Image copies don't break on Windows
+- [0.3.0] - 2018-08-28
+  - Serve static site with *Webrick*
 
-## [0.7.1] - 2018-08-31
+- [0.2.0] - 2018-08-27
+  - More details in the readme
+  - Switched to *Red Carpet* for faster, more complete Markdown support
+  - Switched to *Liquid* templates for faster, more complete templating
 
-- Support main menu
-
-## [0.7.0] - 2018-08-30
-
-Added:
-
-- Content front matter (metadata) support
-
-## [0.6.0] - 2018-08-29
-
-- Bundler for automatic dependency installation
-
-## [0.5.0] - 2018-08-28
-
-- Support non-Markdown content files
-- Text files (.txt) are also templated
-
-## [0.4.1] - 2018-08-28
-
-- Use a command line option to choose whether or not to serve the site
-
-## [0.4.0] - 2018-08-28
-
-- Create and use a ```ruthless.ini``` config file
-
-## [0.3.0] - 2018-08-28
-
-- Serve static site with *Webrick*
-
-## [0.2.0] - 2018-08-27
-
-- More details in the readme
-- Switched to *Red Carpet* for faster, more complete Markdown support
-- Switched to *Liquid* templates for faster, more complete templating
-
-## [0.1.0] - 2018-08-27
-
-- Config files and README
-- Sample site creation
-- Syntax highlighting
-- Markdown parsing
-- Handlebars templates
-- CSS theming
+- [0.1.0] - 2018-08-27
+  - Config files and README
+  - Sample site creation
+  - Syntax highlighting
+  - Markdown parsing
+  - Handlebars templates
+  - CSS theming
 
 ---
 

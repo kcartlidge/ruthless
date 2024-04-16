@@ -43,6 +43,11 @@ From there, you can do the following:
 
 The generated static site will be in a `www` folder alongside the `site` one (so `<folder>/www`). Any existing `www` folder will be replaced (permissions permitting).
 
+When serving a site press `Ctrl``C` at the terminal/command prompt to stop.
+You'll be given the option to `R`estart or `Q`uit.
+If you choose *restart* the site contents will be automatically regenerated first.
+Whilst this is not live-reload it's been close enough for my purposes.
+
 ---
 
 ## Creating a site
@@ -192,8 +197,11 @@ The site is rendered using your content, combined with the `layout.liquid` templ
 - The new HTML and the YAML are then passed through *Liquid* for fast templating
 - You can see [more about Liquid templating here](https://github.com/Shopify/liquid/wiki/Liquid-for-Designers)
 - The results are written to matching folders in the output
-- Files named `*.txt` are also passed through *Liquid*, but are not treated as Markdown. They will be written inside `<pre>` tags.
-- Other file types are copied across unchanged.
+  - The resulting HTML is tidied up (indentation etc)
+- Files named `*.txt` are also passed through *Liquid*, but are not treated as Markdown
+  - The content will be written inside `<pre>` tags
+  - Despite not being Markdown, YAML frontmatter is still supported for the title etc
+- Other file types are copied across unchanged
 
 ---
 
@@ -229,6 +237,7 @@ Running *Ruthless* will fetch the following automatically (via Bundler) on first
 - [kramdown](https://kramdown.gettalong.org/)
 - [Liquid](https://shopify.github.io/liquid/)
 - [Webrick](https://github.com/ruby/webrick)
+- [HTML Beautifier](https://github.com/threedaymonk/htmlbeautifier)
 
 *Webrick* is used for serving the static site locally when creating/updating it, and *is not intended for use in production*.
 

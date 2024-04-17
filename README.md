@@ -43,10 +43,12 @@ From there, you can do the following:
 
 The generated static site will be in a `www` folder alongside the `site` one (so `<folder>/www`). Any existing `www` folder will be replaced (permissions permitting).
 
-When serving a site press `Ctrl``C` at the terminal/command prompt to stop.
+When serving a site press `Ctrl`+`C` at the terminal/command prompt to stop.
 You'll be given the option to `R`estart or `Q`uit.
 If you choose *restart* the site contents will be automatically regenerated first.
 Whilst this is not live-reload it's been close enough for my purposes.
+
+![example site](./example.png)
 
 ---
 
@@ -143,6 +145,9 @@ Lorem ipsum dolor sit amet adipiscing.
 - `siteblurb` - the text to show below the title
 - `sitefooter` - the text to show in the footer area
 - `sitekeywords` - the HTML metatag keywords
+- `randomver` - random string which changes per build
+
+The use of `randomver` can be seen in the default theme template where it is appended to various links in the `head` section to avoid browsers showing a previously cached version after a new deploy.
 
 #### Settings data from the `ini` file
 
@@ -240,16 +245,3 @@ Running *Ruthless* will fetch the following automatically (via Bundler) on first
 - [HTML Beautifier](https://github.com/threedaymonk/htmlbeautifier)
 
 *Webrick* is used for serving the static site locally when creating/updating it, and *is not intended for use in production*.
-
----
-
-## Debugging in Visual Studio Code
-
-- Add the [Ruby extention by Peng Lv](https://marketplace.visualstudio.com/items?itemName=rebornix.Ruby)
-- Install the debugging dependencies:
-
-``` sh
-gem install bundler
-gem install ruby-debug-ide
-gem install debase
-```

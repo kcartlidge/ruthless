@@ -2,6 +2,9 @@
 
 All notable changes to this project will be documented in this file.
 
+- [2.2.2] - 2024-04-17
+  - Slightly enhanced new site template
+
 - [2.2.1] - 2024-04-16
   - Format the rendered HTML using HTML Beautifier
 

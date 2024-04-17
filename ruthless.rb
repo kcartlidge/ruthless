@@ -34,7 +34,7 @@ if @folder
 end
 
 # Define some vars.
-@version = '2.2.1'
+@version = '2.2.2'
 @templatable = ['.md', '.txt'].to_set
 @menu = []
 
@@ -51,7 +51,9 @@ end
 
 # Display the message then exit.
 def done(message)
+  puts
   puts message
+  puts
   exit
 end
 
@@ -144,100 +146,117 @@ disqus-comments  = # account-name
 Home = /
 Latest News = /news
 About = /about")
-  new_file('home page', File.join(@content_folder, 'index.md'), "---\ntitle: Welcome to Ruthless\n---\n\nFor more information, see [the GitHub repository](https://github.com/kcartlidge/ruthless).\n\n* [Latest News](/news)\n* [About Ruthless](/about)")
-  new_file('about page', File.join(@content_folder, 'about.md'), "---\ntitle: About Ruthless\n---\n\nLorem ipsum dolor sit amet adipiscing.")
-  new_file('sample news page', File.join(@sample_news_folder, 'index.md'), "---\ntitle: Latest News\n---\n\nLorem ipsum dolor sit amet adipiscing.\n\n* [Sample News Item 1](sample-news-item-1)\n* [Sample News Item 2](sample-news-item-2)")
-  new_file('sample news item 1 page', File.join(@sample_news_folder, 'sample-news-item-1.md'), "---\ntitle: Sample News Item #1\ndated: August 27, 2018\nauthor: Ruthless.io\nkeywords: news\n---\n\nLorem ipsum dolor sit amet adipiscing.\n\n* [Back to the Latest News](/news)")
-  new_file('sample news item 2 page', File.join(@sample_news_folder, 'sample-news-item-2.md'), "---\ntitle: Sample News Item #2\ndated: January 23, 2019\nauthor: Ruthless.io\nkeywords: news\n---\n\nLorem ipsum dolor sit amet adipiscing.\n\n* [Back to the Latest News](/news)")
+  lipsum = "\n\nSed lobortis ut sem a dapibus. Pellentesque condimentum id tellus et pellentesque. Cras ullamcorper fermentum pharetra. Cras ac justo tellus. Duis non convallis massa. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; *Ut ac magna a lacus* lobortis faucibus quis id ligula."
+  lipsum += lipsum
+  new_file('home page', File.join(@content_folder, 'index.md'), "---\ntitle: Welcome to Ruthless\n---\n\n**For more information**, see [the GitHub repository](https://github.com/kcartlidge/ruthless).\n\n* [Latest News](/news)\n* [About Ruthless](/about)" + lipsum)
+  new_file('about page', File.join(@content_folder, 'about.md'), "---\ntitle: About Ruthless\n---\n\n**Lorem ipsum** dolor sit amet adipiscing." + lipsum)
+  new_file('sample news page', File.join(@sample_news_folder, 'index.md'), "---\ntitle: Latest News\n---\n\n**Lorem ipsum** dolor sit amet adipiscing.\n\n* [Sample News Item 1](sample-news-item-1)\n* [Sample News Item 2](sample-news-item-2)" + lipsum)
+  new_file('sample news item 1 page', File.join(@sample_news_folder, 'sample-news-item-1.md'), "---\ntitle: Sample News Item #1\ndated: August 27, 2023\nauthor: Ruthless.io\nkeywords: news\n---\n\n**Lorem ipsum** dolor sit amet adipiscing.\n\n* [Back to the Latest News](/news)" + lipsum)
+  new_file('sample news item 2 page', File.join(@sample_news_folder, 'sample-news-item-2.md'), "---\ntitle: Sample News Item #2\ndated: January 23, 2024\nauthor: Ruthless.io\nkeywords: news\n---\n\n**Lorem ipsum** dolor sit amet adipiscing.\n\n* [Back to the Latest News](/news)" + lipsum)
   new_file('template', @layout_file, "<!DOCTYPE html>
-    <html lang='en'>
-    <head>
-    <meta charset='utf-8'>
-    <meta http-equiv='X-UA-Compatible' content='IE=edge'>
-    <meta name='viewport' content='width=device-width, initial-scale=1'>
-    <meta name=generator content='Ruthless (Ruby)'>
-    <meta name='keywords' content='{{ sitekeywords }},{{ keywords }}'>
-    <meta name='description' content='{{ sitetitle }}'>
-    <meta name='robots' content='follow,index,noarchive,noodp'>
-    <meta name='google' content='nositelinkssearchbox'>
-    <meta name='author' content='{{ author }}'>
-    <link href='/theme.css' rel='stylesheet' type='text/css' />
-    <title>{{ title}} -- {{ sitetitle }}</title>
-    </head>
-    <body>
-    <header>
-    <h1>{{ sitetitle }}</h1>
-    <aside>{{ siteblurb }}</aside>
-    <nav>
+<html lang='en'>
+<head>
+  <meta charset='utf-8'>
+  <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+  <meta name='viewport' content='width=device-width, initial-scale=1'>
+  <meta name=generator content='Ruthless (Ruby)'>
+  <meta name='keywords' content='{{ sitekeywords }},{{ keywords }}'>
+  <meta name='description' content='{{ sitetitle }}'>
+  <meta name='robots' content='follow,index,noarchive,noodp'>
+  <meta name='google' content='nositelinkssearchbox'>
+  <meta name='author' content='{{ author }}'>
+  <link rel='icon' type='image/png' sizes='32x32' href='/favicon-32x32.png?v={{ randomver }}'>
+  <link rel='icon' type='image/png' sizes='16x16' href='/favicon-16x16.png?v={{ randomver }}'>
+  <link rel='shortcut icon' href='/favicon.ico?v={{ randomver }}'>
+  <link rel='apple-touch-icon' sizes='180x180' href='/apple-touch-icon.png?v={{ randomver }}'>
+  <link rel='manifest' href='/site.webmanifest?v={{ randomver }}'>
+  <link href='/theme.css?v={{ randomver }}' rel='stylesheet' type='text/css' />
+  <title>{{ title}} -- {{ sitetitle }}</title>
+</head>
+<body>
+
+  <header>
+    <div class='inner'>
+      <h1>{{ sitetitle }}</h1>
+      <aside>{{ siteblurb }}</aside>
+    </div>
+  </header>
+  <nav>
+    <div class='inner'>
     {% for option in sitemenu %}{{ option }}{% endfor %}
-    </nav>
-    </header>
-    <section>
-    <h1>{{ title}}</h1>
-    <article>
-    {% include 'page' %}
-    {% if settings.disqus-comments %}
-      <div id='disqus_thread'></div>
-      {% endif %}
+    </div>
+  </nav>
+
+  <main>
+    <div class='inner'>
+      <h1>{{ title}}</h1>
+      <article>
+        {% include 'page' %}
+        {% if settings.disqus-comments %}
+        <div id='disqus_thread'></div>
+        {% endif %}
       </article>
-      </section>
-      <footer>
+    </div>
+  </main>
+
+  <footer>
+    <div class='inner'>
       {{ sitefooter }}
-      </footer>
+    </div>
+  </footer>
 
-      <script>
-      var ls = document.links;
-      for (var i = 0, ln = ls.length; i < ln; i++) if (ls[i].hostname != window.location.hostname) ls[i].target = '_blank';
-        </script>
+  <script>
+    // Make all external links open in a new tab/window.
+    var ls = document.links;
+    for (var i = 0, ln = ls.length; i < ln; i++) if (ls[i].hostname != window.location.hostname) ls[i].target = '_blank';
+  </script>
 
-        {% if settings.google-analytics %}
-          <!-- Global Site Tag (gtag.js) - Google Analytics -->
-          <script async src='https://www.googletagmanager.com/gtag/js?id={{ settings.google-analytics }}'></script>
-          <script>
-          window.dataLayer = window.dataLayer || [];
+  {% if settings.google-analytics %}
+  <!-- Global Site Tag (gtag.js) - Google Analytics -->
+  <script async src='https://www.googletagmanager.com/gtag/js?id={{ settings.google-analytics }}'></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() {
+      dataLayer.push(arguments)
+    };
+    gtag('js', new Date());
+    gtag('config', '{{ settings.google-analytics }}');
+  </script>
+  {% endif %}
 
-          function gtag() {
-            dataLayer.push(arguments)
-            };
-            gtag('js', new Date());
-            gtag('config', '{{ settings.google-analytics }}');
-            </script>
-            {% endif %}
+  {% if settings.disqus-comments %}
+  <script>
+    var disqus_config = function () {
+      // this.page.url = ' ';
+      this.page.identifier = '{{ title }}';
+    };
+    (function () {
+      var d = document, s = d.createElement('script');
+      s.src = 'https://{{ settings.disqus-comments }}.disqus.com/embed.js';
+      s.setAttribute('data-timestamp', +new Date());
+      (d.head || d.body).appendChild(s);
+    })();
+  </script>
+  {% endif %}
 
-            {% if settings.disqus-comments %}
-              <script>
-              var disqus_config = function () {
-                // this.page.url = ' ';
-                this.page.identifier = '{{ title }}';
-                };
-
-                (function () {
-                  var d = document, s = d.createElement('script');
-
-                  s.src = 'https://{{ settings.disqus-comments }}.disqus.com/embed.js';
-
-                  s.setAttribute('data-timestamp', +new Date());
-                  (d.head || d.body).appendChild(s);
-                  })();
-                  </script>
-                  {% endif %}
-                  </body>
-                  </html>")
+</body>
+</html>")
   new_file('child template', File.join(@includes_folder, '_dated.liquid'), "<div class='dated'>{{ dated }}</div>")
   new_file('page template', File.join(@includes_folder, '_page.liquid'), "{% if dated %}{% include 'dated' %}{% endif %}\n{{ content }}")
-  new_file('theme', @theme_file, "body { font-family: 'Noto Sans', Verdana, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; font-size: 13pt; background: #f8f8f8; color: #444; margin: 0; padding: 0.5rem 2rem; }
-                    a { color: #06d; text-decoration: none; border-bottom: solid 1px #8af; }
-                    a:hover { color: #359fe0; }
-                    header, section, footer { max-width: 50rem; margin: 0 auto; }
-header { margin-bottom: 4rem; }
-section { line-height: 140%; }
-footer { margin-top: 5rem; font-size: 0.9rem; }
-header nav { margin-top: 0.75rem; }
-header nav a { margin-right: 1rem; white-space: nowrap; }
-section img { max-width: 10rem; max-height: 10rem; float: right; margin: 1rem 0 1rem 2rem; background: #fff; padding: 0.4rem; box-shadow: 0 0 8px #00000033; }
-header h1 { font-size: 1.2rem; margin: 0.25rem 0; }
-header aside { color: #666; }
-h1 { font-size: 1.75em; color: #000; }
+  new_file('theme', @theme_file, "body { font-family: 'Noto Sans', Verdana, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; font-size: large; background: #f8f8f8; color: #111; margin: 0; padding: 0; }
+a { color: #1e6dac; text-decoration: none; border-bottom: solid 1px #8af; }
+a:hover { color: #085a6e; border-bottom: 2px solid #468c9e; }
+header, nav, main, footer { }
+header { background: #1b4b81; padding-top: 0.4rem; padding-bottom: 0.6rem; }
+nav { border-bottom: solid 2px #1b4b81; background: #ddd; }
+nav a { border: none; margin-right: 1rem; font-size: 1.2rem; white-space: nowrap; }
+main { line-height: 140%; padding-top: 1rem; }
+main img { max-width: 10rem; max-height: 10rem; float: right; margin: 1rem 0 1rem 2rem; background: #fff; padding: 0.4rem; box-shadow: 0 0 8px #00000033; }
+header h1 { font-size: 1.6rem; margin: 0.25rem 0; color: #fff; }
+header aside { color: #ccc; }
+footer { font-size: 0.9rem; padding: 3rem 0 1rem 0; }
+.inner { margin: 0 auto; min-width: 20rem; max-width: 60rem; padding: 0.5rem 4rem; }
+h1 { font-size: 2em; color: #000; letter-spacing: -1px; color: #114770; }
 h1,h2,h3,h4,h5,h6 { line-height: 110%; }
 table { margin: 2rem 0; }
 th, td { padding: 0.1rem 1rem 0.1rem 0; border-bottom: solid 1px #ccc; }
@@ -246,8 +265,8 @@ pre { background: #fff; overflow: scroll; border: solid 1px #999; }
 code { background: #ddd; }
 pre, code { color: #222; padding: 0.2rem 0.3rem; }
 pre code { background: #fff; border: 0; padding: 0; }
-.dated { font-size: 0.8rem; margin-top: -1.25rem; color: #666; text-transform: uppercase; }")
-  done('New site created')
+.dated { margin-top: -1.25rem; text-transform: uppercase; }")
+  done('New site created - favicons are needed (eg https://favicon.io)')
 end
 
 def do_build
@@ -353,6 +372,7 @@ def do_build
         data['siteblurb'] = @site_blurb
         data['sitefooter'] = @site_footer
         data['sitekeywords'] = @site_keywords
+        data['randomver'] = ('a'..'z').to_a.shuffle[0,12].join
         data['sitemenu'] = @menu
         data['settings'] = @settings
         content = @layout.render(data).delete("\r")

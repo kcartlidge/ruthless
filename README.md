@@ -1,4 +1,4 @@
-# Ruthless.io
+# Ruthless
 
 Ruthlessly simple static site generator, written in Ruby.
 
@@ -63,12 +63,13 @@ ruthless.rb
 example-site
   site/
     ruthless.ini
-    theme/
-      layout.liquid
-      theme.css
-      includes/
-        _dated.liquid
-        _page.liquid
+    themes/
+      default/
+        layout.liquid
+        theme.css
+        includes/
+          _dated.liquid
+          _page.liquid
     content/
       index.md
       news/
@@ -101,6 +102,7 @@ title = Ruthless
 blurb = Ruthlessly simple static site generator
 footer = Created by <a href='https://ruthless.io' target='_blank'>ruthless.io</a> and <a href='https://www.ruby-lang.org' target='_blank'>Ruby</a>.
 keywords = ruthless,static,site,generator
+theme = themes/default
 
 [OPTIONS]
 extentions = false
@@ -118,6 +120,9 @@ The `SETTINGS` section can contain any key/values you like.
 
 The two example ones (`analytics` and `comments`) are used by the sample layout. To activate the values remove the `#` (which is a comment marker).
 Any entries you add can be accessed by your theme in the same way as these two are in `theme/layout.liquid`.
+
+The `theme` entry in `[SITE]` is *optional*.
+If present it's a file path relative to the site folder specified on the command line.  If missing it defaults to `themes/default`, which matches the structure created by the `new` command line action.
 
 ### Supported variables in the template
 

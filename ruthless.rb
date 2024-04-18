@@ -1,5 +1,7 @@
 #!/usr/bin/ruby
-#
+
+@version = '3.0.0'
+
 puts 'Ensuring dependencies (slower first time).'
 require 'fileutils'
 require 'find'
@@ -20,21 +22,7 @@ end
 @serve_site = (ARGV[0] && (ARGV[0] == 'serve'))
 @folder = ARGV[1] unless ARGV.length < 2
 
-# Define folder/file locations.
-if @folder
-  @site_folder = File.join(File.dirname(__FILE__), @folder, 'site')
-  @html_folder = File.join(File.dirname(__FILE__), @folder, 'www')
-  @content_folder = File.join(@site_folder, 'content')
-  @layouts_folder = File.join(@site_folder, 'theme')
-  @includes_folder = File.join(@layouts_folder, 'includes')
-  @sample_news_folder = File.join(@content_folder, 'news')
-  @ini_file = File.join(@site_folder, 'ruthless.ini')
-  @layout_file = File.join(@layouts_folder, 'layout.liquid')
-  @theme_file = File.join(@layouts_folder, 'theme.css')
-end
-
 # Define some vars.
-@version = '2.2.2'
 @templatable = ['.md', '.txt'].to_set
 @menu = []
 
@@ -60,8 +48,9 @@ end
 # Show some introductory/explanatory text.
 def show_intro
   puts
-  puts "RUTHLESS #{@version}  https://ruthless.io"
+  puts "RUTHLESS #{@version}"
   puts 'Ruthlessly simple static site generator'
+  puts "https://github.com/kcartlidge/ruthless"
   puts
   puts 'ruby ruthless.rb <command>'
   puts '  new <folder>    Create a new site'
@@ -123,7 +112,25 @@ def get_metadata_and_content(filename)
   { metadata: metadata, content: content }
 end
 
+def define_folders
+  # Define folder/file locations.
+  if @folder
+    @content_folder = File.join(@site_folder, 'content')
+    @layouts_folder = File.join(@site_folder, 'themes', 'default')
+    if @custom_theme
+      @layouts_folder = File.join(@site_folder, @custom_theme)
+      puts 'Setting theme to ' + @layouts_folder
+    end
+    @includes_folder = File.join(@layouts_folder, 'includes')
+    @sample_news_folder = File.join(@content_folder, 'news')
+    @layout_file = File.join(@layouts_folder, 'layout.liquid')
+    @theme_file = File.join(@layouts_folder, 'theme.css')
+  end
+end
+
 def do_create
+  define_folders()
+
   puts '-------------------------------------------'
   puts 'Creating new site and content folders'
   fatal('Site folder already exists') if Dir.exist?(@site_folder)
@@ -132,8 +139,9 @@ def do_create
   new_file('ruthless.ini', @ini_file, "[SITE]
 title    = Sample Ruthless Site
 blurb    = Welcome to my Ruthless-generated site
-footer   = Created by <a href='https://github.com/kcartlidge/ruthless' target='_blank'>Ruthless.io</a> and <a href='https://www.ruby-lang.org' target='_blank'>Ruby</a>.
+footer   = Created by <a href='https://github.com/kcartlidge/ruthless' target='_blank'>Ruthless</a> and <a href='https://www.ruby-lang.org' target='_blank'>Ruby</a>.
 keywords = ruthless,static,site,generator
+theme    = themes/default
 
 [OPTIONS]
 extentions = false
@@ -151,8 +159,8 @@ About = /about")
   new_file('home page', File.join(@content_folder, 'index.md'), "---\ntitle: Welcome to Ruthless\n---\n\n**For more information**, see [the GitHub repository](https://github.com/kcartlidge/ruthless).\n\n* [Latest News](/news)\n* [About Ruthless](/about)" + lipsum)
   new_file('about page', File.join(@content_folder, 'about.md'), "---\ntitle: About Ruthless\n---\n\n**Lorem ipsum** dolor sit amet adipiscing." + lipsum)
   new_file('sample news page', File.join(@sample_news_folder, 'index.md'), "---\ntitle: Latest News\n---\n\n**Lorem ipsum** dolor sit amet adipiscing.\n\n* [Sample News Item 1](sample-news-item-1)\n* [Sample News Item 2](sample-news-item-2)" + lipsum)
-  new_file('sample news item 1 page', File.join(@sample_news_folder, 'sample-news-item-1.md'), "---\ntitle: Sample News Item #1\ndated: August 27, 2023\nauthor: Ruthless.io\nkeywords: news\n---\n\n**Lorem ipsum** dolor sit amet adipiscing.\n\n* [Back to the Latest News](/news)" + lipsum)
-  new_file('sample news item 2 page', File.join(@sample_news_folder, 'sample-news-item-2.md'), "---\ntitle: Sample News Item #2\ndated: January 23, 2024\nauthor: Ruthless.io\nkeywords: news\n---\n\n**Lorem ipsum** dolor sit amet adipiscing.\n\n* [Back to the Latest News](/news)" + lipsum)
+  new_file('sample news item 1 page', File.join(@sample_news_folder, 'sample-news-item-1.md'), "---\ntitle: Sample News Item #1\ndated: August 27, 2023\nauthor: Ruthless\nkeywords: news\n---\n\n**Lorem ipsum** dolor sit amet adipiscing.\n\n* [Back to the Latest News](/news)" + lipsum)
+  new_file('sample news item 2 page', File.join(@sample_news_folder, 'sample-news-item-2.md'), "---\ntitle: Sample News Item #2\ndated: January 23, 2024\nauthor: Ruthless\nkeywords: news\n---\n\n**Lorem ipsum** dolor sit amet adipiscing.\n\n* [Back to the Latest News](/news)" + lipsum)
   new_file('template', @layout_file, "<!DOCTYPE html>
 <html lang='en'>
 <head>
@@ -243,14 +251,18 @@ About = /about")
 </html>")
   new_file('child template', File.join(@includes_folder, '_dated.liquid'), "<div class='dated'>{{ dated }}</div>")
   new_file('page template', File.join(@includes_folder, '_page.liquid'), "{% if dated %}{% include 'dated' %}{% endif %}\n{{ content }}")
-  new_file('theme', @theme_file, "body { font-family: 'Noto Sans', Verdana, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; font-size: large; background: #f8f8f8; color: #111; margin: 0; padding: 0; }
-a { color: #1e6dac; text-decoration: none; border-bottom: solid 1px #8af; }
+  new_file('default theme', @theme_file, "html { box-sizing: border-box; overflow-y: scroll; }
+body { font-family: 'Noto Sans', Verdana, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; font-size: large; background: #f8f8f8; color: #111; margin: 0; padding: 0; }
+html, body, * { cursor: default; }
+a { cursor: pointer; color: #1e6dac; text-decoration: none; border-bottom: solid 1px #8af; }
 a:hover { color: #085a6e; border-bottom: 2px solid #468c9e; }
 header, nav, main, footer { }
-header { background: #1b4b81; padding-top: 0.4rem; padding-bottom: 0.6rem; }
-nav { border-bottom: solid 2px #1b4b81; background: #ddd; }
-nav a { border: none; margin-right: 1rem; font-size: 1.2rem; white-space: nowrap; }
-main { line-height: 140%; padding-top: 1rem; }
+header { background: #1b4b81; background: repeating-linear-gradient(135deg,#1b4b81,#1b4b81 200px,#205086 200px,#205086 400px); padding-top: 0.4rem; padding-bottom: 0.6rem; }
+nav { background: #ddd; }
+nav .inner { padding-top: 0.4rem; padding-bottom: 0.3rem; }
+nav a { border: none; padding: 0.3rem 0.75rem 0.4rem 0.75rem; display: inline-block; background: #456a93; color: #fff; margin: 0 0.2rem 0.2rem 0; font-size: 1.2rem; white-space: nowrap; }
+nav a:hover { border: none; background: #1e5085; color: #fff; }
+main { line-height: 140%; }
 main img { max-width: 10rem; max-height: 10rem; float: right; margin: 1rem 0 1rem 2rem; background: #fff; padding: 0.4rem; box-shadow: 0 0 8px #00000033; }
 header h1 { font-size: 1.6rem; margin: 0.25rem 0; color: #fff; }
 header aside { color: #ccc; }
@@ -285,6 +297,7 @@ def do_build
   @site_title = ini['SITE']['title']
   @site_blurb = ini['SITE']['blurb']
   @site_footer = ini['SITE']['footer']
+  @custom_theme = ini['SITE']['theme']
   @site_keywords = ini['SITE']['keywords']
   @extentions = ini['OPTIONS']['extentions']
   @settings = ini['SETTINGS']
@@ -298,6 +311,8 @@ def do_build
       end
     end
   end
+
+  define_folders()
 
   # Ensure we have required folders/files.
   fatal('Content folder not found') unless Dir.exist?(@content_folder)
@@ -415,10 +430,15 @@ end
 
 show_intro
 fatal('No folder specified') if ARGV.length < 2
-do_create if @new_site
+
+# Headline folders.
+@site_folder = File.join(File.dirname(__FILE__), @folder, 'site')
+@html_folder = File.join(File.dirname(__FILE__), @folder, 'www')
+@ini_file = File.join(@site_folder, 'ruthless.ini')
 
 # Repeatedly do the work (with Ctrl-C to stop an iteration)
 ongoing = true
+do_create if @new_site
 while(ongoing)
   do_build if @build_site
   do_serve if @serve_site

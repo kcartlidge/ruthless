@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+- [3.0.0] - 2024-04-18
+  - Optional custom theme specified in the `ini` file
+    - **Breaking change** as the default path moves
+
 - [2.2.2] - 2024-04-17
   - Slightly enhanced new site template
 
@@ -10,7 +14,7 @@ All notable changes to this project will be documented in this file.
 
 - [2.2.0] - 2020-12-06
   - Allow for restart/quit on Ctrl-C when serving
-    - Breaking change as needs human intervention to end
+    - **Breaking change** as needs human intervention to end
 
 - [2.1.0] - 2020-02-19
   - Require a folder name as input argument

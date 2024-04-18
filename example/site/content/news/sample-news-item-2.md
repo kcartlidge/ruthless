@@ -1,7 +1,7 @@
 ---
 title: Sample News Item #2
 dated: January 23, 2024
-author: Ruthless.io
+author: Ruthless
 keywords: news
 ---
 

@@ -1,5 +1,5 @@
 ---
-title: Latest News
+title: Sample Articles
 ---
 
 **Lorem ipsum** dolor sit amet adipiscing.

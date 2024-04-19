@@ -19,9 +19,12 @@ See the [change log file](CHANGELOG.md) for current and previous version details
 - You can **create a complete sample site**, including **layout** and **theme**, simply by running the script.
 - **Child templates** are supported for shared headers, snippets etc.
 - Your child templates can be **conditionally included** by in-template logic.
-- Optionally generate pages that **don't need .html extentions even where the server doesn't support that option**.
 - Other than Ruby and Bundler, it **bootstraps it's own dependencies** for ease of use.
 - Write your content using **Markdown** or **plain text** files and they will use your **template and theme**. Other files are simply copied in unchanged.
+- Automatically generate **indexes of pages in a folder**
+  - Sorted by metadata **sequence**, or **latest-first**, or **alphabetically**
+- Optionally generate pages that **don't need .html extentions even where the server doesn't support that option**.
+  - *Warning:* automatically generated indexes currently *only work without extentions*
 - **Built-in server** option for local development.
 - The Markdown files can have **any YAML** content you like and it will be **passed to your layout**.
 
@@ -108,8 +111,8 @@ theme = themes/default
 extentions = false
 
 [SETTINGS]
-google-analytics = # AB-123456789-0
-disqus-comments  = # account-name
+# google-analytics = AB-123456789-0
+# disqus-comments  = account-name
 
 [MENU]
 Home = /
@@ -123,6 +126,8 @@ Any entries you add can be accessed by your theme in the same way as these two a
 
 The `theme` entry in `[SITE]` is *optional*.
 If present it's a file path relative to the site folder specified on the command line.  If missing it defaults to `themes/default`, which matches the structure created by the `new` command line action.
+
+*Warning:* Note that if you activate `extentions` then currently automatically generated indexes of pages will have incorrect links.
 
 ### Supported variables in the template
 
@@ -166,7 +171,8 @@ As mentioned, any items can be placed in an entry's YAML area and they will be p
 There are no 'required' YAML items, however the default layout templates expect the following (their presence is expected only if you base your layout on the default one):
 
 - `title` - the human readable title to show on a piece of content
-- `dated` - the (text) date value to show on a piece of content
+- `dated` - optional date value for a piece of content
+- `sequence` - optional ordering within the current folder (1..99999)
 - `author` - the value to use for the author HTML metatag
 - `keywords` - extra keywords to join the `sitekeywords`
 
@@ -194,6 +200,21 @@ Refer to them in your other templates by the name only:
 ```
 
 If you're still unsure then create a new site (see above) and the default template will include nested conditional templates.
+
+### Automatic bulleted lists of pages in a folder
+
+Assume you're doing the index page of some news or articles.
+Maintaining a list of available pages is time-consuming even in Markdown.
+As each page can have a `dated` or `sequence` metadata item this can be automated.
+
+Anywhere in your index (or other) page add `[[INDEX]]`.
+When the web version of the page is generated this is replaced with a list.
+The entries will be all the entries in the folder (minus the index page).
+They'll be sorted by sequence, then date descending, then title.
+
+There are examples in a `new` site's articles and news index pages.
+Currently they will *always* be `li` entries in a `ul`.
+You can surround them in your page with a `div` if you need to target them specifically by CSS.
 
 ### Basic flow
 

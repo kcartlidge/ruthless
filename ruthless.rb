@@ -1,6 +1,6 @@
 #!/usr/bin/ruby
 
-@version = '3.0.0'
+@version = '3.0.1'
 
 puts 'Ensuring dependencies (slower first time).'
 require 'fileutils'
@@ -18,12 +18,12 @@ end
 
 # Get the command arguments.
 @new_site = (ARGV[0] && (ARGV[0] == 'new'))
-@build_site = (ARGV[0] && (ARGV[0] == 'build' or ARGV[0] == 'serve'))
+@build_site = (ARGV[0] && (ARGV[0] == 'build'))
 @serve_site = (ARGV[0] && (ARGV[0] == 'serve'))
 @folder = ARGV[1] unless ARGV.length < 2
 
 # Define some vars.
-@templatable = ['.md', '.txt'].to_set
+@templatable = %w[.md .txt].to_set
 @menu = []
 
 # -------------------------------------------------------------
@@ -85,7 +85,8 @@ def key_must_exist(ini, section, key)
 end
 
 # Load in the given file as an array of strings for yaml metadata and content.
-def get_metadata_and_content(filename)
+# Optionally content can be skipped and it will be empty on return.
+def get_metadata_and_content(filename, skip_content = false)
   metadata = Hash.new
   content = ''
   in_meta = false
@@ -97,6 +98,9 @@ def get_metadata_and_content(filename)
       in_meta = true
     elsif lc > 1 && in_meta && line.start_with?('---')
       in_meta = false
+      if skip_content
+        break
+      end
     else
       if in_meta
         bits = line.rstrip.split(': ')  # extra space means trim each bit
@@ -109,6 +113,26 @@ def get_metadata_and_content(filename)
       end
     end
   end
+
+  # Generate a fixed-width key for sorting items.
+  # This is the 'sequence|datetime|title', with defaults if not provided.
+  # We reverse the sequence because the link generation does a reverse
+  # itself to apply date-descending, which means the sequence portion of
+  # the key will also be reversed and so we correct for it in advance.
+  seq = '00000'
+  dtm = ttl = '197001010000'
+  begin
+    if metadata['sequence'] != nil
+      seq = 99999 -metadata['sequence'].to_i
+      seq = sprintf("%05d", seq)
+    end
+    dtm = Date.parse(metadata['dated']).strftime('%Y%m%d%H%M') unless metadata['dated'] == nil
+    metadata['dated'] = Date.parse(metadata['dated']).strftime('%d %B, %Y') unless metadata['dated'] == nil
+  rescue
+    # no action needed.
+  end
+  ttl = metadata['title'] unless metadata['title'] == nil
+  metadata['sortkey'] = "#{seq}|#{dtm}|#{ttl}"
   { metadata: metadata, content: content }
 end
 
@@ -123,13 +147,14 @@ def define_folders
     end
     @includes_folder = File.join(@layouts_folder, 'includes')
     @sample_news_folder = File.join(@content_folder, 'news')
+    @sample_article_folder = File.join(@content_folder, 'articles')
     @layout_file = File.join(@layouts_folder, 'layout.liquid')
     @theme_file = File.join(@layouts_folder, 'theme.css')
   end
 end
 
 def do_create
-  define_folders()
+  define_folders
 
   puts '-------------------------------------------'
   puts 'Creating new site and content folders'
@@ -147,20 +172,26 @@ theme    = themes/default
 extentions = false
 
 [SETTINGS]
-google-analytics = # AB-123456789-0
-disqus-comments  = # account-name
+# google-analytics = AB-123456789-0
+# disqus-comments  = account-name
 
 [MENU]
 Home = /
 Latest News = /news
+Articles = /articles
 About = /about")
   lipsum = "\n\nSed lobortis ut sem a dapibus. Pellentesque condimentum id tellus et pellentesque. Cras ullamcorper fermentum pharetra. Cras ac justo tellus. Duis non convallis massa. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; *Ut ac magna a lacus* lobortis faucibus quis id ligula."
   lipsum += lipsum
   new_file('home page', File.join(@content_folder, 'index.md'), "---\ntitle: Welcome to Ruthless\n---\n\n**For more information**, see [the GitHub repository](https://github.com/kcartlidge/ruthless).\n\n* [Latest News](/news)\n* [About Ruthless](/about)" + lipsum)
   new_file('about page', File.join(@content_folder, 'about.md'), "---\ntitle: About Ruthless\n---\n\n**Lorem ipsum** dolor sit amet adipiscing." + lipsum)
-  new_file('sample news page', File.join(@sample_news_folder, 'index.md'), "---\ntitle: Latest News\n---\n\n**Lorem ipsum** dolor sit amet adipiscing.\n\n* [Sample News Item 1](sample-news-item-1)\n* [Sample News Item 2](sample-news-item-2)" + lipsum)
+  new_file('sample news page', File.join(@sample_news_folder, 'index.md'), "---\ntitle: Latest News\n---\n\n**Lorem ipsum** dolor sit amet adipiscing.\n\n[[INDEX]]\n\n---\n\n" + lipsum)
   new_file('sample news item 1 page', File.join(@sample_news_folder, 'sample-news-item-1.md'), "---\ntitle: Sample News Item #1\ndated: August 27, 2023\nauthor: Ruthless\nkeywords: news\n---\n\n**Lorem ipsum** dolor sit amet adipiscing.\n\n* [Back to the Latest News](/news)" + lipsum)
   new_file('sample news item 2 page', File.join(@sample_news_folder, 'sample-news-item-2.md'), "---\ntitle: Sample News Item #2\ndated: January 23, 2024\nauthor: Ruthless\nkeywords: news\n---\n\n**Lorem ipsum** dolor sit amet adipiscing.\n\n* [Back to the Latest News](/news)" + lipsum)
+  new_file('sample undated news item', File.join(@sample_news_folder, 'sample-undated-news-item.md'), "---\ntitle: Sample Undated News Item\nauthor: Ruthless\nkeywords: news\n---\n\n**Lorem ipsum** dolor sit amet adipiscing.\n\n* [Back to the Latest News](/news)" + lipsum)
+  new_file('sample articles', File.join(@sample_article_folder, 'index.md'), "---\ntitle: Sample Articles\n---\n\n**Lorem ipsum** dolor sit amet adipiscing.\n\n[[INDEX]]\n\n---\n\n" + lipsum)
+  new_file('sample article 1', File.join(@sample_article_folder, 'sample-article-1.md'), "---\ntitle: Sample Article #1\nsequence: 1\nauthor: Ruthless\nkeywords: article\n---\n\n**Lorem ipsum** dolor sit amet adipiscing.\n\n* [Back to the Articles](/articles)" + lipsum)
+  new_file('sample article 2', File.join(@sample_article_folder, 'sample-article-2.md'), "---\ntitle: Sample Article #2\nsequence: 2\nauthor: Ruthless\nkeywords: article\n---\n\n**Lorem ipsum** dolor sit amet adipiscing.\n\n* [Back to the Articles](/articles)" + lipsum)
+  new_file('sample unsequenced article', File.join(@sample_article_folder, 'sample-unsequenced-article.md'), "---\ntitle: Sample Unsequenced Article\nauthor: Ruthless\nkeywords: article\n---\n\n**Lorem ipsum** dolor sit amet adipiscing.\n\n* [Back to the Articles](/articles)" + lipsum)
   new_file('template', @layout_file, "<!DOCTYPE html>
 <html lang='en'>
 <head>
@@ -252,32 +283,38 @@ About = /about")
   new_file('child template', File.join(@includes_folder, '_dated.liquid'), "<div class='dated'>{{ dated }}</div>")
   new_file('page template', File.join(@includes_folder, '_page.liquid'), "{% if dated %}{% include 'dated' %}{% endif %}\n{{ content }}")
   new_file('default theme', @theme_file, "html { box-sizing: border-box; overflow-y: scroll; }
-body { font-family: 'Noto Sans', Verdana, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; font-size: large; background: #f8f8f8; color: #111; margin: 0; padding: 0; }
-html, body, * { cursor: default; }
+body { background: #f8f8f8; color: #111; margin: 0; padding: 0; }
+html, body { font-family: 'Noto Sans', Verdana, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; font-size: 14px; }
+html, body, * { cursor: default; line-height: 145%; }
 a { cursor: pointer; color: #1e6dac; text-decoration: none; border-bottom: solid 1px #8af; }
 a:hover { color: #085a6e; border-bottom: 2px solid #468c9e; }
 header, nav, main, footer { }
 header { background: #1b4b81; background: repeating-linear-gradient(135deg,#1b4b81,#1b4b81 200px,#205086 200px,#205086 400px); padding-top: 0.4rem; padding-bottom: 0.6rem; }
 nav { background: #ddd; }
 nav .inner { padding-top: 0.4rem; padding-bottom: 0.3rem; }
-nav a { border: none; padding: 0.3rem 0.75rem 0.4rem 0.75rem; display: inline-block; background: #456a93; color: #fff; margin: 0 0.2rem 0.2rem 0; font-size: 1.2rem; white-space: nowrap; }
+nav a { border: none; padding: 0.3rem 0.75rem 0.4rem 0.75rem; display: inline-block; background: #456a93; color: #fff; margin: 0 0.2rem 0.2rem 0; font-size: 1rem; white-space: nowrap; }
 nav a:hover { border: none; background: #1e5085; color: #fff; }
 main { line-height: 140%; }
-main img { max-width: 10rem; max-height: 10rem; float: right; margin: 1rem 0 1rem 2rem; background: #fff; padding: 0.4rem; box-shadow: 0 0 8px #00000033; }
+main img { max-width: 14rem; float: right; margin: 1rem 0 1rem 2rem; background: #fff; padding: 0.4rem; box-shadow: 0 0 8px #00000033; transform: rotate(3deg); }
 header h1 { font-size: 1.6rem; margin: 0.25rem 0; color: #fff; }
 header aside { color: #ccc; }
-footer { font-size: 0.9rem; padding: 3rem 0 1rem 0; }
-.inner { margin: 0 auto; min-width: 20rem; max-width: 60rem; padding: 0.5rem 4rem; }
+footer { font-size: 0.8rem; padding: 3rem 0 1rem 0; }
+.inner { margin: 0 auto; min-width: 20rem; max-width: 70rem; padding: 0.5rem 4rem; }
 h1 { font-size: 2em; color: #000; letter-spacing: -1px; color: #114770; }
 h1,h2,h3,h4,h5,h6 { line-height: 110%; }
-table { margin: 2rem 0; }
-th, td { padding: 0.1rem 1rem 0.1rem 0; border-bottom: solid 1px #ccc; }
-li { margin: 0.25em 0; }
-pre { background: #fff; overflow: scroll; border: solid 1px #999; }
-code { background: #ddd; }
-pre, code { color: #222; padding: 0.2rem 0.3rem; }
-pre code { background: #fff; border: 0; padding: 0; }
-.dated { margin-top: -1.25rem; text-transform: uppercase; }")
+table { margin: 2rem 0; background: #fff; border: solid 2px #ccc; }
+th, td { padding: 0.1rem 0.5rem; border-bottom: solid 1px #ccc; }
+ul, ol { padding-left: 2rem; }
+li { margin: 0.4em 0; }
+blockquote { background: #e5e5e5; margin: 1.5rem 2rem 1.5rem 3rem; padding: 0.4rem 1.5rem; }
+pre { font-family: 'PT Mono', Cousine, 'Roboto Mono', Monaco, 'Courier New', Courier, monospace; font-size: 90%; box-shadow: 0 0 4px rgba(0, 0, 0, 0.2); background: #fff; border: solid 2px #777; margin: 2rem 0; padding: 0.75rem 1rem; overflow-x: auto; }
+code { display: inline; background: #fff; box-shadow: 0 0 4px rgba(0, 0, 0, 0.2); font-size: 1.1em; text-indent: 0; margin: 0 0.2em; padding: 0.1rem 0.3rem; border: solid 1px #777; }
+pre, code { color: #222; }
+pre code { display: block; box-shadow: none; background: #fff; padding: 0; border: 0; }
+div.dated { display: inline-block; padding: 0.2rem 0.6rem; text-transform: uppercase; background: #d5d5d5; }
+li .dated { display: inline-block; vertical-align: middle; margin: 0; padding-left: 0.5rem; font-size: 0.9rem; color: #888; }
+@media only screen and (max-width: 45rem) { article img { max-width: 9rem; } }
+")
   done('New site created - favicons are needed (eg https://favicon.io)')
 end
 
@@ -312,7 +349,7 @@ def do_build
     end
   end
 
-  define_folders()
+  define_folders
 
   # Ensure we have required folders/files.
   fatal('Content folder not found') unless Dir.exist?(@content_folder)
@@ -337,6 +374,7 @@ def do_build
   puts "  #{File::SEPARATOR}"
   prefix = "#{@content_folder}#{File::SEPARATOR}"
   prefix_length = prefix.length
+  index_cache = Hash.new()
   FileUtils.copy(@theme_file, File.join(@html_folder, 'theme.css'))
   Find.find(@content_folder) do |path|
     next if File.directory? path
@@ -376,11 +414,65 @@ def do_build
       File.open(out_filename, 'w') do |file|
         src = get_metadata_and_content(path)
         content = src[:content]
+
+        # Embed any index lists.
+        # Use a cache in case multiple pages want the same index.
+        if content.include?('[[INDEX]]')
+          folder = File.dirname(path)
+          md_list = ''
+          if index_cache[folder] != nil
+            # Use a cached version.
+            md_list = index_cache[folder]
+          else
+            # Scan all items at this level (only).
+            links = Hash.new()
+            Dir.each_child(folder) do |item_file|
+              # Skip folders.
+              item_path = File.join(folder, item_file)
+              next if File.directory? item_path
+
+              # Skip the index file itself.
+              lnk_filename = File.basename(item_file, '.*')
+              next if lnk_filename == 'index'
+
+              # Derive the basics, including path-aware links.
+              lnk_meta = get_metadata_and_content(item_path, true)[:metadata]
+              lnk_rel = item_path[prefix_length, item_path.length]
+              lnk_ext = File.extname(lnk_rel)
+              if lnk_ext != nil
+                lnk_rel = lnk_rel[0..(lnk_rel.length - lnk_ext.length - 1)]
+              end
+              lnk_title = lnk_rel
+              lnk_title = lnk_meta['title'] if lnk_meta['title'] != nil
+              lnk_suffix = ''
+              lnk_suffix =  "<span class='dated'>#{lnk_meta['dated']}</span>" if lnk_meta['dated'] != nil
+
+              # Store in a hash keyed by the sortkey.
+              links[lnk_meta['sortkey']] = "- [#{lnk_title}](/#{lnk_rel})#{lnk_suffix}\n"
+            end
+
+            # Reverse the sort key to generate links from the hash.
+            # See get_metadata_and_content for an explanation of why
+            # this does dates descending but sequences ascending.
+            links = links.sort_by { |k,v| k }
+            links.reverse.each do |link|
+              md_list += link[1]
+            end
+
+            # Add to the cache in case it's requested by a sibling.
+            index_cache[folder] = md_list
+          end
+          content.sub!("[[INDEX]]", md_list)
+        end
+
+        # Render.
         if ext == '.md'
-          content = Kramdown::Document.new(content).to_html
+          opts = { parse_block_html: true }
+          content = Kramdown::Document.new(content, opts).to_html
         elsif ext == '.txt'
           content = "<pre>#{content}</pre>"
         end
+
         data = src[:metadata]
         data['content'] = content
         data['sitetitle'] = @site_title
@@ -417,7 +509,7 @@ end
 # Return true/false deending upon user confirmation of quitting
 def confirm_quit
   choice = ''
-  while(choice == '')
+  while choice == ''
     puts("(R)estart or (Q)uit?")
     answer = STDIN.gets.strip.upcase
     if answer == 'R' or answer == 'Q' then return answer == 'Q' end
@@ -436,15 +528,25 @@ fatal('No folder specified') if ARGV.length < 2
 @html_folder = File.join(File.dirname(__FILE__), @folder, 'www')
 @ini_file = File.join(@site_folder, 'ruthless.ini')
 
-# Repeatedly do the work (with Ctrl-C to stop an iteration)
-ongoing = true
-do_create if @new_site
-while(ongoing)
-  do_build if @build_site
-  do_serve if @serve_site
-  puts
-  ongoing = ! confirm_quit
-  puts
+if @new_site
+  # One-off creation.
+  puts 'Creating new site skeleton.'
+  do_create
+elsif @build_site
+  # One-off build.
+  puts 'Building site.'
+  do_build
+elsif @serve_site
+  # Repeatedly do the work (with Ctrl-C to stop an iteration)
+  puts 'Building and serving site.'
+  ongoing = true
+  while ongoing
+    do_build
+    do_serve
+    puts
+    ongoing = !confirm_quit
+    puts
+  end
 end
 
 done('Finis.')

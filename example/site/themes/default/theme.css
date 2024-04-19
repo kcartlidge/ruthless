@@ -25,3 +25,4 @@ code { background: #ddd; }
 pre, code { color: #222; padding: 0.2rem 0.3rem; }
 pre code { background: #fff; border: 0; padding: 0; }
 .dated { margin-top: -1.25rem; text-transform: uppercase; }
+li .dated { display: inline-block; vertical-align: top; margin: 0; padding-left: 0.5rem; font-size: 0.9rem; color: #888; }

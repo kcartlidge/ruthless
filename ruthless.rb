@@ -1,6 +1,6 @@
 #!/usr/bin/ruby
 
-@version = '3.0.1'
+@version = '3.0.2'
 
 puts 'Ensuring dependencies (slower first time).'
 require 'fileutils'
@@ -320,6 +320,7 @@ end
 
 def do_build
   # Show the folder paths.
+  start = Time.now
   puts '-------------------------------------------'
   puts 'Reading ' + @site_folder
   puts 'Creating ' + @html_folder
@@ -493,7 +494,8 @@ def do_build
     end
   end
   puts '-------------------------------------------'
-  puts 'Generated.'
+  elapsed = (Time.now - start).round(2)
+  puts("Generated in #{elapsed} second(s)")
 end
 
 def do_serve
